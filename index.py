@@ -18,9 +18,9 @@ app = Flask(__name__)
 app.secret_key = 'Alberto970013260M'
 
 #función para conectar a la base de datos
-connection = pymysql.connect(host='localhost',
-                             user='alain',
-                             password='alain79',
+connection = pymysql.connect(host='69.62.71.171',
+                             user='root',
+                             password='caravanadestrucs',
                              database='bd_ehrlich',
                              cursorclass=pymysql.cursors.DictCursor
                              )
