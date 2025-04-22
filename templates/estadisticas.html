@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<title>Administrador</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" href="/static/css/main.css"><!-- Asegúrate de incluir jQuery y Bootstrap JS en tu HTML -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Incluir ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+
+	
+</head>
+<body>
+	<!-- SideBar -->
+	<section class="full-box cover dashboard-sideBar">
+		<div class="full-box dashboard-sideBar-bg btn-menu-dashboard"></div>
+		<div class="full-box dashboard-sideBar-ct">
+			<!--SideBar Title -->
+			<div class="full-box text-uppercase text-center text-titles dashboard-sideBar-title">
+				Laboratorio Clinico <i class="zmdi zmdi-close btn-menu-dashboard visible-xs"></i>
+			</div>
+			<!-- SideBar User info -->
+			<div class="full-box dashboard-sideBar-UserInfo">
+				<figure class="full-box">
+					<img src="/static/assets/img/avatar.jpg" alt="UserIcon"> <br>
+					<figcaption class="text-center text-titles">{{ usuario.correo }}</figcaption>
+				</figure>
+				<ul class="full-box list-unstyled text-center">
+					<li>
+						<a href="#!">
+							<i class="zmdi zmdi-settings"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" class="btn-exit-system" data-logout="{{ url_for('logout') }}">
+							<i class="zmdi zmdi-power"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<!-- SideBar Menu -->
+			<ul class="list-unstyled full-box dashboard-sideBar-Menu">
+				<li>
+					<a href="{{ url_for('home', usuario=session['usuario']) }}">
+						<i class="zmdi zmdi-view-dashboard zmdi-hc-fw"></i> Principal
+					</a>
+				</li>
+				<li>
+					<a href="{{ url_for('estadisticas') }}">
+						<i class="zmdi zmdi-graphic-eq zmdi-hc-fw"></i> Estadísticas
+					</a>
+				</li>				
+				<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-account-add zmdi-hc-fw"></i> Usuarios <i class="zmdi zmdi-caret-down pull-right"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="admin.html"><i class="zmdi zmdi-account zmdi-hc-fw"></i> Administradores</a>
+						</li>
+						<li>
+							<a href="teacher.html"><i class="zmdi zmdi-male-alt zmdi-hc-fw"></i> Trabajadores</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="#!" class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-card zmdi-hc-fw"></i> Consultas <i class="zmdi zmdi-caret-down pull-right"></i>
+					</a>
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="registration.html"><i class="zmdi zmdi-money-box zmdi-hc-fw"></i> Estudios</a>
+						</li>
+						<li>
+							<a href="payments.html"><i class="zmdi zmdi-money zmdi-hc-fw"></i> Reportes</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</section>
+
+	<!-- Contenido de la barra, notificaciones, busqueda y preguntas-->
+	<section class="full-box dashboard-contentPage">
+		<!-- NavBar -->
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li class="pull-left">
+					<a href="#!" class="btn-menu-dashboard"><i class="zmdi zmdi-more-vert"></i></a>
+				</li>
+				<li>
+					<a href="#!" class="btn-Notifications-area">
+						<i class="zmdi zmdi-notifications-none"></i>
+						<span class="badge">7</span>
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-search">
+						<i class="zmdi zmdi-search"></i>
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<!-- Content page sección de menus solo son muestras -->
+		<div class="container-fluid">
+			<div class="page-header">
+			  <h1 class="text-titles">Sistema Ehrlich <small>Estadísticas</small></h1>
+			</div>
+		</div>
+
+		<div class="col-xs-12">
+			<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+				<li class="nav-item">
+					<a class="nav-link active" href="#grafica-estudios-tab" data-toggle="tab">Gráfica de Estudios</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#grafica-ingresos-tab" data-toggle="tab">Gráfica de Ingresos</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#grafica-inventario-tab" data-toggle="tab">Gráfica de Inventario</a>
+				</li>
+			</ul>
+
+			<div class="tab-content">
+				<div class="tab-pane fade show active" id="grafica-estudios-tab">
+					<div class="container mt-4">
+						<div class="row">
+							<div class="col-lg-12 mb-4">
+								<div id="grafica-estudios" style="width: 100%; height: 500px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="grafica-ingresos-tab">
+					<div class="container mt-4">
+						<div class="row">
+							<div class="col-lg-12 mb-4">
+								<div id="grafica-ingresos" style="width: 100%; height: 500px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="grafica-inventario-tab">
+					<div class="container mt-4">
+						<div class="row">
+							<div class="col-lg-12 mb-4">
+								<div id="grafica-inventario" style="width: 100%; height: 500px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		 
+	</section>
+
+	<script>
+		$(document).ready(function () {
+			// Función para redimensionar gráficas
+			function resizeCharts() {
+				$('div[id^="grafica"]').each(function () {
+					$(this).css('width', '100%');
+					$(this).css('height', '500px');
+					// Llamar a la función de redibujado de la librería ECharts
+					if (echarts.getInstanceByDom(this)) {
+						echarts.getInstanceByDom(this).resize();
+					}
+				});
+			}
+	
+			// Redibujar la gráfica al cargar la página
+			resizeCharts();
+	
+			// Redibujar la gráfica al cambiar de pestaña
+			$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+				// Obtener el id del gráfico
+				var target = $(e.target).attr("href");
+	
+				// Redibujar la gráfica
+				$(target + ' div[id^="grafica"]').each(function () {
+					$(this).css('width', '100%');
+					$(this).css('height', '500px');
+					// Llamar a la función de redibujado de la librería ECharts
+					if (echarts.getInstanceByDom(this)) {
+						echarts.getInstanceByDom(this).resize();
+					}
+				});
+			});
+	
+			// Mostrar la pestaña "Gráfica de Estudios" después de un breve retraso para asegurar que todo el contenido se haya cargado
+			setTimeout(function() {
+				$('a[href="#grafica-estudios-tab"]').tab('show');
+			}, 100); // Retraso de 100 ms para asegurar que la pestaña sea visible correctamente
+		});
+	</script>
+	
+
+    <!-- graficas de estadísticas -->
+    <script src="/static/js/grafica-estudios.js"></script>
+    <script src="/static/js/grafica-ingresos.js"></script>
+	<script src="/static/js/grafica-inventario.js"></script>
+	<!--====== Scripts -->
+	<script src="/static/js/jquery-3.1.1.min.js"></script>
+	<script src="/static/js/sweetalert2.min.js"></script>
+	<script src="/static/js/bootstrap.min.js"></script>
+	<script src="/static/js/material.min.js"></script>
+	<script src="/static/js/ripples.min.js"></script>
+	<script src="/static/js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="/static/js/main.js"></script>
+	<script>
+		$.material.init();
+	</script>
+</body>
+</html>

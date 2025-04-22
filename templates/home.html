@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<title>Administrador</title>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" href="/static/css/main.css"><!-- Asegúrate de incluir jQuery y Bootstrap JS en tu HTML -->
+	<link rel="icon" href="/static/assets/img/icono.png" type="image/x-icon">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+	<style>
+		.hidden {
+			display: none;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- SideBar -->
+	<section class="full-box cover dashboard-sideBar">
+		<div class="full-box dashboard-sideBar-bg btn-menu-dashboard"></div>
+		<div class="full-box dashboard-sideBar-ct">
+			<!--SideBar Title -->
+			<div class="full-box text-uppercase text-center text-titles dashboard-sideBar-title">
+				Laboratorio Clinico <i class="zmdi zmdi-close btn-menu-dashboard visible-xs"></i>
+			</div>
+			<!-- SideBar User info -->
+			<div class="full-box dashboard-sideBar-UserInfo">
+				<figure class="full-box">
+					<img src="/static/assets/img/avatar.jpg" alt="UserIcon"> <br>
+					<figcaption class="text-center text-titles">{{ usuario.correo
+						}}</figcaption>
+				</figure>
+				<ul class="full-box list-unstyled text-center">
+					<li>
+						<a href="#!">
+							<i class="zmdi zmdi-settings"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" class="btn-exit-system" data-logout="{{ url_for('logout') }}">
+							<i class="zmdi zmdi-power"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<!-- ---------------------- MENU LATERAL DE OPCIONES  ******************************** -->
+			<ul class="list-unstyled full-box dashboard-sideBar-Menu">
+				<li>
+					<a href="{{ url_for('home') }}">
+						<i class="zmdi zmdi-view-dashboard zmdi-hc-fw"></i> General
+					</a>
+				</li>
+				<li>
+					<a href="#" onclick="mostrarSeccion('seccionUsuarios')">
+						<i class="zmdi zmdi-account zmdi-hc-fw"></i> Usuarios
+					</a>
+				</li>
+				<li>
+					<a href="#" onclick="mostrarSeccion('seccionMateriales')">
+						<i class="zmdi zmdi-case zmdi-hc-fw"></i> Almacen
+					</a>
+				</li>
+				<li>
+					<a href="#" onclick="mostrarSeccion('seccionClientes')">
+						<i class="zmdi zmdi-accounts zmdi-hc-fw"></i> Clientes
+					</a>
+				</li>
+				<li>
+					<a href="#" onclick="mostrarSeccion('seccionEstudios')">
+						<i class="zmdi zmdi-money-box zmdi-hc-fw"></i> Estudios
+					</a>
+				</li>
+			</ul>
+		</div>
+	</section>
+
+	<!-- SECCIONES QUE SE INVOCAN PARA MOSTRAR LA INFORMACIÓN ************************************-->
+	<!--  ---------------------------------------------------------------------------------------- -->
+
+	<!-- MOSTRAR USUARIOS REGISTRADOS EN EL SISTEMA ENRICH ************-->
+	<section id="seccionUsuarios" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> - Usuarios existentes en el Sistema</small></h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- Menu Verde **************************************-->
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li class="active">
+							<a href="#" data-toggle="tab">Visualizar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioUsuarios')" data-toggle="tab">Modificar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioAgregarUsuarios')" data-toggle="tab">Agregar
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!-- Contenido de los usuarios en Registrados en el Sistema ------------------->
+			<div id="seccionUsusariosX" class="container-fluid">
+				<div class="row">
+					<div class="col-xs-12 col-md-10 col-md-offset-1">
+						<h3>Listado de los usuarios</h3>
+						<div class="table-responsive">
+							<table class="table table-hover text-center">
+								<thead>
+									<tr>
+										<th class="text-center align-middle">ID</th>
+										<th class="text-center align-middle">Rol</th>
+										<th class="text-center align-middle">Nombre</th>
+										<th class="text-center align-middle">Apellido</th>
+										<th class="text-center align-middle">Correo</th>
+										<th class="text-center align-middle">Teléfono</th>
+									</tr>
+								</thead>
+								<tbody id="tabla_usuarios">
+									<!-- Aquí se insertarán los clientes -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- MOSTRAR PRODUCTOS REGISTRADOS EN EL SISTEMA ENRICH ************-->
+	<section id="seccionMateriales" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> - Materiales existentes en el Sistema</small></h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- Menu Verde **************************************-->
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li class="active">
+							<a href="#" data-toggle="tab">Visualizar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioMateriales')" data-toggle="tab">Modificar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioAgregarMateriales')" data-toggle="tab">Agregar
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!-- Contenido de los materiales existentes sección Visualizar ------------------->
+			<div id="seccionMaterialesX" class="container-fluid">
+				<div class="row">
+					<div class="col-xs-12 col-md-10 col-md-offset-1">
+						<h3>Listado de productos en el sistema</h3>
+						<div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+							<table class="table table-hover text-center">
+								<thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
+									<tr>
+										<th class="text-center align-middle">ID</th>
+										<th class="text-center align-middle">Nombre Producto</th>
+										<th class="text-center align-middle">Cantidad</th>
+										<th class="text-center align-middle">Marca</th>
+										<th class="text-center align-middle">Precio</th>
+										<th class="text-center align-middle">Fecha de Ingreso</th>
+									</tr>
+								</thead>
+								<tbody id="tabla_productos">
+									<!-- Aquí se insertarán los clientes -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- MOSTRAR CLIENTES REGISTRADOS EN EL SISTEMA ENRICH ************-->
+	<section id="seccionClientes" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> Clientes registrados en el Sistema</small></h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- Menu Verde **************************************-->
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li class="active">
+							<a href="#" data-toggle="tab">Visualizar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioClientes')" data-toggle="tab">Modificar </a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!-- Contenido de los clientes en el area de trabajo ------------------->
+			<div id="seccionClientesX" class="container-fluid">
+				<div class="row">
+					<div class="col-xs-12 col-md-10 col-md-offset-1">
+						<h3>Listado de Clientes en el sistema</h3>
+						<div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+							<table class="table table-hover text-center">
+								<thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
+									<tr>
+										<th class="text-center align-middle">ID</th>
+										<th class="text-center align-middle">Nombre</th>
+										<th class="text-center align-middle">Fecha</th>
+										<th class="text-center align-middle">Correo</th>
+										<th class="text-center align-middle">Telefono</th>
+										<th class="text-center align-middle">Pago</th>
+									</tr>
+								</thead>
+								<tbody id="tabla_clientes">
+									<!-- Aquí se insertarán los clientes -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- MOSTRAR ESTUDIOS REGISTRADOS EN EL SISTEMA ENRICH ************-->
+	<section id="seccionEstudios" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> Estudios registrados en el Sistema</small></h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- Menu Verde **************************************-->
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li class="active">
+							<a href="#" data-toggle="tab">Visualizar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioEstudios')" data-toggle="tab">Modificar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioAgregarEstudios')" data-toggle="tab">Agregar
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!-- Contenido de los Estudios en el area de trabajo ------------------->
+			<div id="seccionEstudiosX" class="container-fluid">
+				<div class="row">
+					<div class="col-xs-12 col-md-10 col-md-offset-1">
+						<h3>Listado de Estudios en el sistema</h3>
+						<div class="table-responsive" style="max-height: 470px; overflow-y: auto;">
+							<table class="table table-hover text-center">
+								<thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
+									<tr>
+										<th class="text-center align-middle">ID</th>
+										<th class="text-center align-middle">Folio</th>
+										<th class="text-center align-middle">Nombre</th>
+										<th class="text-center align-middle">Precio</th>
+										<th class="text-center align-middle">Descuento</th>
+									</tr>
+								</thead>
+								<tbody id="tabla_estudios">
+									<!-- Aquí se insertarán los clientes -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Contenido de la barra, notificaciones, busqueda y preguntas-->
+	<section class="full-box dashboard-contentPage">
+		<!-- NavBar -->
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#!" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<!-- Content page sección de menus solo son muestras -->
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles">Sistema Ehrlich
+					<small>Administradores</small>
+				</h1>
+			</div>
+		</div>
+		<!-- 
+			//**********************************************************//
+			ICONOS DEL SISTEMA HENRICH
+			//**********************************************************//
+		-->
+		<div id="seccionIconos" class="full-box text-center" style="padding: 30px 10px;">
+			<!-- ICONOS DE INICIO  MATERIALES ------------------------->
+			<article class="full-box tile" onclick="mostrarSeccion('seccionMateriales')">
+				<div class="full-box tile-title text-center text-titles text-uppercase">
+					Materiales
+				</div>
+				<div class="full-box tile-icon text-center">
+					<i class="zmdi zmdi-case"></i>
+				</div>
+				<div class="full-box tile-number text-titles">
+					<p class="full-box" id="totalMateriales"></p>
+					<small>Cantidad</small>
+				</div>
+			</article>
+			<!-- ICONOS DE INICIO  ESTUDIOS ------------------------->
+			<article class="full-box tile" onclick="mostrarSeccion('seccionEstudios')">
+				<div class="full-box tile-title text-center text-titles text-uppercase">
+					Estudios
+				</div>
+				<div class="full-box tile-icon text-center">
+					<i class="zmdi zmdi-money-box"></i>
+				</div>
+				<div class="full-box tile-number text-titles">
+					<p class="full-box" id="totalEstudios"></p>
+					<small>Cantidad</small>
+				</div>
+			</article>
+			<!-- ICONOS DE INICIO  USUARIOS ------------------------->
+			<article class="full-box tile" onclick="mostrarSeccion('seccionUsuarios')">
+				<div class="full-box tile-title text-center text-titles text-uppercase">
+					Usuarios
+				</div>
+				<div class="full-box tile-icon text-center">
+					<i class="zmdi zmdi-account"></i>
+				</div>
+				<div class="full-box tile-number text-titles">
+					<p class="full-box" id="totalUsuarios"></p>
+					<small>Cantidad</small>
+				</div>
+			</article>
+			<!-- ICONOS DE INICIO  CLIENTES	 ------------------------->
+			<article class="full-box tile" onclick="mostrarSeccion('seccionClientes')">
+				<div class="full-box tile-title text-center text-titles text-uppercase">
+					Clientes
+				</div>
+				<div class="full-box tile-icon text-center">
+					<i class="zmdi zmdi-accounts"></i>
+				</div>
+				<div class="full-box tile-number text-titles">
+					<p class="full-box" id="totalClientes"></p>
+					<small>Cantidad</small>
+				</div>
+			</article>
+		</div>
+	</section>
+	<!-- 
+	//**************************************************************************************************//
+				FORMULARIOS PARA ACTUALIZAR LA BASE DE DATOS HENRICH
+	//*************************************************************************************************//
+	-->
+	<!-- FORMULARIO PARA BUSCAR Y MODIFICAR UN USUARIO -->
+	<section id="seccionFormularioUsuarios" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> - Usuarios existentes en el Sistema</small></h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- Menu Verde **************************************-->
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li>
+							<a onclick="mostrarSeccion('seccionUsuarios')" data-toggle="tab">Visualizar </a>
+						</li>
+						<li class="active">
+							<a href="#" data-toggle="tab">Modificar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioAgregarUsuarios')" data-toggle="tab">Agregar
+							</a>
+					</ul>
+				</div>
+			</div>
+			<!-- Formulario-->
+			<div class="row">
+
+				<div class="container">
+					<div class="col-md-6">
+						<h4>Buscar Usuario</h4>
+						<form id="buscarUsuarioForm" onsubmit="buscarUsuario(event)">
+							<div class="form-group">
+								<label for="buscarID">Buscar por ID:</label>
+								<input type="text" class="form-control" id="buscarID"
+									placeholder="Ingrese el ID del usuario">
+							</div>
+							<div class="form-group">
+								<label for="buscarNombre">Buscar por Nombre:</label>
+								<input type="text" class="form-control" id="buscarNombre"
+									placeholder="Ingrese el nombre del usuario">
+							</div>
+							<button type="submit" class="btn btn-info btn-raised btn-sm">Buscar Usuario</button>
+						</form>
+					</div>
+					<div class="col-md-6">
+						<div id="usuarioDatos" class="container-fluid">
+							<h4>Datos del Usuario</h4>
+							<form id="formModificarUsuario" onsubmit="modificarUsuario(event)">
+								<div class="form-group">
+									<label for="modificarID">ID del Usuario:</label>
+									<input type="text" class="form-control" id="modificarID">
+								</div>
+								<div class="form-group">
+									<label for="modificarNombre">Nombre:</label>
+									<input type="text" class="form-control" id="modificarNombre">
+								</div>
+								<div class="form-group">
+									<label for="modificarCorreo">Correo:</label>
+									<input type="email" class="form-control" id="modificarCorreo">
+								</div>
+								<div class="form-group">
+									<label for="modificarTelefono">Teléfono:</label>
+									<input type="tel" class="form-control" id="modificarTelefono">
+								</div>
+								<button type="submit" class="btn btn-info btn-raised btn-sm">Actualizar Usuario</button>
+								<button type="button" class="btn btn-danger btn-raised btn-sm"
+									onclick="borrarUsuario()">Borrar Usuario</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- FORMULARIO PARA AGREGAR UN USUARIO -->
+	<section id="seccionFormularioAgregarUsuarios" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> - Usuarios existentes en el Sistema</small></h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- Menu Verde **************************************-->
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li>
+							<a onclick="mostrarSeccion('seccionUsuarios')" data-toggle="tab">Visualizar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioUsuarios')" data-toggle="tab">Modificar </a>
+						</li>
+						<li class="active">
+							<a href="#" data-toggle="tab">Agregar </a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<!-- Formulario para agregar un nuevo usuario -->
+			<div class="row">
+				<div class="container">
+					<h4>Agregar Usuario</h4>
+					<form id="formAgregarUsuario" onsubmit="agregarUsuario(event)">
+						<div class="row">
+							<!-- Primera columna -->
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="nombreUsuario">Nombre:</label>
+									<input type="text" class="form-control" id="nombreUsuario"
+										placeholder="Ingrese el nombre" required>
+								</div>
+								<div class="form-group">
+									<label for="apellidoUsuario">Apellido:</label>
+									<input type="text" class="form-control" id="apellidoUsuario"
+										placeholder="Ingrese el apellido" required>
+								</div>
+								<div class="form-group">
+									<label for="correoUsuario">Correo:</label>
+									<input type="email" class="form-control" id="correoUsuario"
+										placeholder="Ingrese el correo" required>
+								</div>
+							</div>
+
+							<!-- Segunda columna -->
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="passwordUsuario">Contraseña:</label>
+									<input type="password" class="form-control" id="passwordUsuario"
+										placeholder="Ingrese la contraseña" required>
+								</div>
+								<div class="form-group">
+									<label for="telefonoUsuario">Teléfono:</label>
+									<input type="tel" class="form-control" id="telefonoUsuario"
+										placeholder="Ingrese el teléfono" required>
+								</div>
+								<div class="form-group">
+									<label for="tipoUsuario">Tipo de Usuario</label>
+									<select class="form-control" id="tipoUsuario" required>
+										<option value="0">Administrador</option>
+										<option value="1">Trabajador</option>
+									</select>
+								</div>
+
+								<!-- Botón de envío -->
+								<button type="submit" class="btn btn-info btn-raised btn-sm">Agregar Usuario</button>
+							</div>
+						</div>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</section>
+
+	<!-- FORMULARIO PARA BUSCAR Y MODIFICAR UN PRODUCTO -->
+	<section id="seccionFormularioMateriales" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> - Modificar algún producto en el Sistema</small></h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- Menu Verde **************************************-->
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li>
+							<a onclick="mostrarSeccion('seccionMateriales')" data-toggle="tab">Visualizar </a>
+						</li>
+						<li class="active">
+							<a href="#" data-toggle="tab">Modificar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioAgregarMateriales')" data-toggle="tab">Agregar
+							</a>
+					</ul>
+				</div>
+			</div>
+			<!-- Formulario para modificar Productos-->
+			<div class="row">
+				<div class="container">
+					<div class="col-md-6">
+						<h4>Buscar Producto</h4>
+						<form id="buscarProductoForm" onsubmit="buscarProducto(event)">
+							<div class="form-group">
+								<label for="buscarID_P">Buscar por ID:</label>
+								<input type="text" class="form-control" id="buscarID_P"
+									placeholder="Ingrese el ID del Producto">
+							</div>
+							<div class="form-group">
+								<label for="buscarNombre_P">Buscar por Nombre:</label>
+								<input type="text" class="form-control" id="buscarNombre_P"
+									placeholder="Ingrese el nombre del Producto">
+							</div>
+							<button type="submit" class="btn btn-info btn-raised btn-sm">Buscar Producto</button>
+						</form>
+					</div>
+					<div class="col-md-6">
+						<div id="usuarioProductos" class="container-fluid">
+							<h4>Datos del Producto</h4>
+							<form id="formModificarProductos" onsubmit="modificarProducto(event)">
+								<div class="form-group">
+									<label for="modificarID_P">ID del Producto:</label>
+									<input type="text" class="form-control" id="modificarID_P">
+								</div>
+								<div class="form-group">
+									<label for="modificarNombre_P">Nombre del Producto:</label>
+									<input type="text" class="form-control" id="modificarNombre_P">
+								</div>
+								<div class="form-group">
+									<label for="modificarCantidad_P">Cantidad del Producto:</label>
+									<input type="text" class="form-control" id="modificarCantidad_P">
+								</div>
+								<div class="form-group">
+									<label for="modificarMarca_P">Marca del Producto:</label>
+									<input type="text" class="form-control" id="modificarMarca_P">
+								</div>
+								<div class="form-group">
+									<label for="modificarPrecio_P">Precio del Producto:</label>
+									<input type="text" class="form-control" id="modificarPrecio_P">
+								</div>
+								<button type="submit" class="btn btn-info btn-raised btn-sm">Actualizar
+									Producto</button>
+								<button type="button" class="btn btn-danger btn-raised btn-sm"
+									onclick="borrarProducto()">Borrar Producto</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- FORMULARIO PARA AGREGAR UN PRODUCTO -->
+	<section id="seccionFormularioAgregarMateriales" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> - Agregando productos en el Sistema</small></h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- Menu Verde **************************************-->
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li>
+							<a onclick="mostrarSeccion('seccionMateriales')" data-toggle="tab">Visualizar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioMateriales')" data-toggle="tab">Modificar </a>
+						</li>
+						<li class="active">
+							<a href="#" data-toggle="tab">Agregar
+							</a>
+					</ul>
+				</div>
+			</div>
+			<!-- Formulario para agregar Productos-->
+			<div class="row">
+				<div class="container">
+					<div class="col-md-6">
+						<h4>Agregar Producto</h4>
+						<form id="productForm">
+							<div class="form-group">
+								<label for="nombreProducto">Nombre</label>
+								<div class="col-sm-6">
+									<input type="text" class="form-control" id="nombreProducto" name="nombreProducto"
+										required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="cantidadProducto">Cantidad</label>
+								<div class="col-sm-6">
+									<input type="number" class="form-control" id="cantidadProducto"
+										name="cantidadProducto" required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="marcaProducto">Marca</label>
+								<div class="col-sm-6">
+									<input type="text" class="form-control" id="marcaProducto" name="marcaProducto"
+										required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="precioProducto">Precio</label>
+								<div class="col-sm-6">
+									<input type="number" class="form-control" id="precioProducto" name="precioProducto"
+										required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="fechaIngreso">Fecha de Ingreso</label>
+								<div class="col-sm-4">
+									<input type="date" class="form-control" id="fechaIngreso" name="fechaIngreso"
+										required>
+								</div>
+							</div>
+							<button type="submit" class="btn btn-info btn-raised btn-sm">Guardar
+								Producto</button>
+							<div id="mensajeAlertaProducto" class="alert" style="display: none;"></div>
+						</form>
+
+					</div>
+
+				</div>
+			</div>
+
+
+
+		</div>
+	</section>
+
+	<!-- FORMULARIO PARA VISUALIZAR Y MODIFICAR CLIENTES -->
+	<section id="seccionFormularioClientes" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> - Modificar usuarios existentes en el Sistema</small></h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- Menu Verde **************************************-->
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li>
+							<a onclick="mostrarSeccion('seccionClientes')" data-toggle="tab">Visualizar </a>
+						</li>
+						<li class="active">
+							<a href="#" data-toggle="tab">Modificar </a>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+			<!-- Formulario para busqueda-->
+			<div class="row">
+				<div class="container">
+					<div class="col-md-6">
+						<h4>Buscar Cliente</h4>
+						<form id="buscarClienteForm" onsubmit="buscarCliente(event)">
+							<div class="form-group">
+								<label for="buscarIDC">Buscar por ID:</label>
+								<input type="text" class="form-control" id="buscarIDC"
+									placeholder="Ingrese el ID del Cliente">
+							</div>
+							<div class="form-group">
+								<label for="buscarNombreC">Buscar por Nombre de Cliente:</label>
+								<input type="text" class="form-control" id="buscarNombreC"
+									placeholder="Ingrese el nombre del cliente">
+							</div>
+							<button type="submit" class="btn btn-info btn-raised btn-sm">Buscar Cliente</button>
+						</form>
+					</div>
+
+					<div class="col-md-6">
+						<div id="usuarioDatosCliente" class="container-fluid">
+							<h4>Datos del Cliente</h4>
+							<form id="formModificarCliente" onsubmit="modificarCliente(event)">
+								<div class="form-group">
+									<label for="modificarIDCliente">ID del Cliente:</label>
+									<input type="text" class="form-control" id="modificarIDCliente">
+								</div>
+								<div class="form-group">
+									<label for="modificarNombreCliente">Nombre del Cliente:</label>
+									<input type="text" class="form-control" id="modificarNombreCliente">
+								</div>
+								<div class="form-group">
+									<label for="modificarCorreoCliente">Correo electrónico:</label>
+									<input type="email" class="form-control" id="modificarCorreoCliente">
+								</div>
+								<div class="form-group">
+									<label for="modificarTelefonoCliente">Número Telefónico:</label>
+									<input type="tel" class="form-control" id="modificarTelefonoCliente">
+								</div>
+								<div class="form-group">
+									<label for="modificarMedicoCliente">Nombre del Médico:</label>
+									<input type="text" class="form-control" id="modificarMedicoCliente">
+								</div>
+
+								<button type="submit" class="btn btn-info btn-raised btn-sm">Actualizar Usuario</button>
+								<button type="button" class="btn btn-danger btn-raised btn-sm"
+									onclick="borrarUsuario()">Borrar Usuario</button>
+							</form>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- FORMULARIO PARA BUSCAR Y MODIFICAR UN ESTUDIO -->
+	<section id="seccionFormularioEstudios" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> - Estudios existentes en el Sistema</small></h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- Menu Verde **************************************-->
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li>
+							<a onclick="mostrarSeccion('seccionEstudios')" data-toggle="tab">Visualizar </a>
+						</li>
+						<li class="active">
+							<a href="#" data-toggle="tab">Modificar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioAgregarEstudios')" data-toggle="tab">Agregar
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!-- Formulario-->
+			<div class="row">
+				<div class="container">
+					<div class="col-md-4">
+						<h4>Buscar Estudio</h4>
+						<form id="buscarEstudioForm" onsubmit="buscarEstudio(event)">
+							<div class="form-group">
+								<label for="buscarIDE">Buscar por ID:</label>
+								<input type="text" class="form-control" id="buscarIDE"
+									placeholder="Ingrese el ID del Estudio">
+							</div>
+							<div class="form-group">
+								<label for="buscarFolioE">Buscar por folio:</label>
+								<input type="text" class="form-control" id="buscarFolioE"
+									placeholder="Ingrese el folio del estudio">
+							</div>
+							<button type="submit" class="btn btn-info btn-raised btn-sm">Buscar Estudio</button>
+						</form>
+					</div>
+					<div class="col-md-6">
+						<div id="estudioDatos" class="container-fluid">
+							<h4>Datos del Estudio</h4>
+							<form id="formModificarEstudio" onsubmit="modificarEstudio(event)">
+								<div class="form-group">
+									<label for="modificarIDEstudio">ID del Estudio:</label>
+									<input type="text" class="form-control" id="modificarIDEstudio">
+								</div>
+								<div class="form-group">
+									<label for="modificarFolioEStudio">Folio del Estudio:</label>
+									<input type="text" class="form-control" id="modificarFolioEstudio">
+								</div>
+								<div class="form-group">
+									<label for="modificarNombreEstudio">Nombre del Estudio:</label>
+									<input type="text" class="form-control" id="modificarNombreEstudio">
+								</div>
+								<div class="form-group">
+									<label for="modificarPrecioEstudio">Precio:</label>
+									<input type="number" class="form-control" id="modificarPrecioEstudio">
+								</div>
+								<div class="form-group">
+									<label for="modificarDescuentoEstudio">Descuento:</label>
+									<input type="number" class="form-control" id="modificarDescuentoEstudio">
+								</div>
+								<button type="submit" class="btn btn-info btn-raised btn-sm">Actualizar Estudio</button>
+								<button type="button" class="btn btn-danger btn-raised btn-sm"
+									onclick="borrarEstudio()">Borrar Estudio</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- FORMULARIO PARA AGREGAR UN ESTUDIOS -->
+	<section id="seccionFormularioAgregarEstudios" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> - Agregar nuevos estudios en el Sistema</small></h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- Menu Verde **************************************-->
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li>
+							<a onclick="mostrarSeccion('seccionEstudios')" data-toggle="tab">Visualizar </a>
+						</li>
+						<li>
+							<a onclick="mostrarSeccion('seccionFormularioEstudios')" data-toggle="tab">Modificar </a>
+						</li>
+						<li class="active">
+							<a href="#" data-toggle="tab">Agregar </a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<!-- Formulario para agregar un nuevo estudio -->
+			<div class="row">
+				<div class="container">
+					<h4>Agregar Estudio</h4>
+					<form id="formAgregarEstudio" onsubmit="agregarEstudio(event)">
+						<div class="row">
+							<!-- Primera columna -->
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="nombreEstudio">Nombre del Estudio:</label>
+									<input type="text" class="form-control" id="nombreEstudio"
+										placeholder="Ingrese el nombre del estudio" required>
+								</div>
+								<div class="form-group">
+									<label for="folioEstudio">Folio:</label>
+									<input type="text" class="form-control" id="folioEstudio"
+										placeholder="Ingrese el folio del estudio" required>
+								</div>
+								<div class="form-group">
+									<label for="precioEstudio">Precio:</label>
+									<input type="number" class="form-control" id="precioEstudio"
+										placeholder="Ingrese el precio del estudio" required>
+								</div>
+								<div class="form-group">
+									<label for="descuentoEstudio">Descuento:</label>
+									<input type="number" class="form-control" id="descuentoEstudio"
+										placeholder="Ingrese el precio del estudio" required>
+								</div>
+							</div>
+							<!-- Botón de envío -->
+							<button type="submit" class="btn btn-info btn-raised btn-sm">Agregar Estudio</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script>
+
+		// Llamar a la función al cargar la página
+		document.addEventListener('DOMContentLoaded', function () {
+			CargarUsuariosBD();
+			CargarProductosBD();
+			CargarClientesBD();
+			CargarEstudiosBD();
+		});
+
+		//***************************************************************************//
+		// Mostrar secciones del menu lateral izquierodo
+		function mostrarSeccion(idSeccion) {
+			// Ocultar todas las secciones
+			var secciones = document.getElementsByClassName('dashboard-contentPage');
+			for (var i = 0; i < secciones.length; i++) {
+				secciones[i].classList.add('hidden');
+			}
+
+			// Ocultar la sección de materiales y estudios
+			var seccionIconos = document.getElementById('seccionIconos');
+			if (seccionIconos) {
+				seccionIconos.classList.add('hidden');
+			}
+
+			// Mostrar la sección deseada
+			var seccion = document.getElementById(idSeccion);
+			if (seccion) {
+				seccion.classList.remove('hidden');
+			} else {
+				console.warn('Sección no encontrada: ' + idSeccion);
+			}
+
+		}
+		/*		****************************************************************************************
+				FUNCIONES PARA LA CONSULTA DE LA BASE DE DATOS Y MOSTRAR EN LAS TABLAS CORRESPONDIENTES
+				A LA SECCION DE HTML ******************************************************************
+				****************************************************************************************/
+
+		// FUNCIONES PARA USUARIOS ********************************************************************
+		function mostrarUsuarios() {
+			document.getElementById('SeccionUsuariosX').style.display = 'none';
+			document.getElementById('').style.display = 'block';
+			CargarUsuariosBD();
+		}
+
+		let usuariosData = [];
+		function CargarUsuariosBD() {
+			fetch('/usuarios') //Accede a la funcion de Python
+				.then(response => response.json())
+				.then(data => {
+					usuariosData = data; // Almacenar los datos de los usuarios
+					document.getElementById('totalUsuarios').textContent = usuariosData.length; //Calcula la cantidad de elementos que hay guardado en la base de datos
+					mostrarUsuariosBD(usuariosData);
+				})
+				.catch(error => console.error('Error al cargar los usuarios de la BD:', error));
+		}
+
+		function mostrarUsuariosBD(usuariosData) {
+			const tablaUsuario = document.getElementById('tabla_usuarios');
+			tablaUsuario.innerHTML = ''; // Limpiar tabla existente
+			usuariosData.forEach(usuario => {	//hace referencia a la tabla usuario de la BD
+				let rol = usuario.tipo === 0 ? 'Administrador' : 'Trabajador';
+				const row = `
+            <tr>
+                <td>${usuario.id_usuario}</td>
+				<td>${rol}</td>
+                <td>${usuario.nombre}</td>
+                <td>${usuario.apellido}</td>
+                <td>${usuario.correo}</td>
+                <td>${usuario.telefono}</td>
+            </tr>
+        `;
+				tablaUsuario.innerHTML += row;
+			});
+		}
+		// FIN DE FUNCIONES PARA USUARIOS ********************************************************************
+
+		// FUNCIONES PARA PRODUCTOS ********************************************************************
+		function mostrarProductos() {
+			document.getElementById('SeccionProductosX').style.display = 'none';//Se elige donde se visualizaran los productos
+			document.getElementById('').style.display = 'block';
+			CargarProductosBD();
+		}
+
+		let productosData = [];
+		function CargarProductosBD() {
+			fetch('/productos') //Accede a la funcion de Python
+				.then(response => response.json())
+				.then(data => {
+					productosData = data; // Almacenar los datos de los usuarios
+					//console.log(data);
+					document.getElementById('totalMateriales').textContent = productosData.length; //Calcula la cantidad de elementos que hay guardado en la base de datos
+					mostrarProductosBD(productosData);
+				})
+				.catch(error => console.error('Error al cargar los productos de la BD:', error));
+		}
+
+		function formatearFecha(fecha) {
+			const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+			return new Date(fecha).toLocaleDateString('es-ES', options);
+		}
+
+		function mostrarProductosBD(productosData) {
+			const tablaProducto = document.getElementById('tabla_productos');
+			tablaProducto.innerHTML = ''; // Limpiar tabla existente
+			productosData.forEach(producto => {	//hace referencia a la tabla producto de la BD
+				const fechaFormateada = formatearFecha(producto.fecha_ingreso); // Formatear la fecha
+				const row = `
+            <tr>
+                <td>${producto.id_producto}</td>
+                <td>${producto.nombre}</td>
+                <td>${producto.cantidad}</td>
+                <td>${producto.marca}</td>
+				<td>${producto.precio}</td>
+                <td>${fechaFormateada}</td>
+            </tr>
+        `;
+				tablaProducto.innerHTML += row;
+			});
+		}
+		//********************************************************************************************************
+		// FUNCIONES PARA CLIENTES ********************************************************************
+		function mostrarClientes() {
+			document.getElementById('seccionClientesX').style.display = 'none';//Se elige donde se visualizaran los productos
+			document.getElementById('').style.display = 'block';
+			CargarClientesBD();
+		}
+
+		let clientesData = [];
+		function CargarClientesBD() {
+			fetch('/clientesBD') //Accede a la funcion de Python
+				.then(response => response.json())
+				.then(data => {
+					clientesData = data; // Almacenar los datos de los usuarios
+					//console.log(data);
+					document.getElementById('totalClientes').textContent = clientesData.length; //Calcula la cantidad de elementos que hay guardado en la base de datos
+					mostrarClientesBD(clientesData);
+				})
+				.catch(error => console.error('Error al cargar los clientes de la BD:', error));
+		}
+
+		function mostrarClientesBD(clientesData) {
+			const tablaCliente = document.getElementById('tabla_clientes');
+			tablaCliente.innerHTML = ''; // Limpiar tabla existente
+			clientesData.forEach(cliente => {	//hace referencia a la tabla cliente de la BD
+				const fechaFormateada = formatearFecha(cliente.fecha);
+				const row = `
+            <tr>
+                <td>${cliente.id_cliente}</td>
+                <td>${cliente.nombre}</td>
+                <td>${fechaFormateada}</td>
+                <td>${cliente.correo}</td>
+				<td>${cliente.telefono}</td>
+                <td>${cliente.pago_total}</td>
+            </tr>
+        `;
+				tablaCliente.innerHTML += row;
+			});
+		}
+
+		//********************************************************************************************************
+		// FUNCIONES PARA ESTUDIOS ********************************************************************
+		function mostrarEstudios() {
+			document.getElementById('seccionEstudiosX').style.display = 'none';//Se elige donde se visualizaran los productos
+			document.getElementById('').style.display = 'block';
+			CargarEstudiosBD();
+		}
+
+		let estudiosData = [];
+		function CargarEstudiosBD() {
+			fetch('/estudiosBD') //Accede a la funcion de Python
+				.then(response => response.json())
+				.then(data => {
+					estudiosData = data; // Almacenar los datos de los usuarios
+					//console.log(data);
+					document.getElementById('totalEstudios').textContent = estudiosData.length; //Calcula la cantidad de elementos que hay guardado en la base de datos
+					mostrarEstudiosBD(estudiosData);
+				})
+				.catch(error => console.error('Error al cargar los estudios de la BD:', error));
+		}
+
+		function mostrarEstudiosBD(estudiosData) {
+			const tablaEstudios = document.getElementById('tabla_estudios');
+			tablaEstudios.innerHTML = ''; // Limpiar tabla existente
+			estudiosData.forEach(estudio => {	//hace referencia a la tabla cliente de la BD
+				const row = `
+            <tr>
+                <td>${estudio.id_estudio}</td>
+				<td>${estudio.folio}</td>
+                <td>${estudio.nombre}</td>
+				<td>${estudio.precio}</td>
+				<td>${estudio.descuento}</td>
+            </tr>
+        `;
+				tablaEstudios.innerHTML += row;
+			});
+		}
+
+		//**********************************************************************************************************
+		// ------------------------------         FUNCIONES PARA USUARIOS  ****************************************
+		//**********************************************************************************************************
+		function buscarUsuario(event) {
+			event.preventDefault();
+
+			const id = document.getElementById('buscarID').value;
+			const nombre = document.getElementById('buscarNombre').value;
+
+			let url = '/usuarios';  // URL base para buscar usuarios
+			const params = [];
+			if (id) {
+				params.push(`id=${id}`);
+			}
+			if (nombre) {
+				params.push(`nombre=${nombre}`);
+			}
+			if (params.length > 0) {
+				url += `?${params.join('&')}`;
+			}
+
+			fetch(url)
+				.then(response => response.json())
+				.then(data => {
+					if (data.length > 0) {
+						if (id) {
+							const usuario = data.find(u => u.id_usuario === parseInt(id));
+							//const usuario = data[0];  // Toma el primer resultado
+							document.getElementById('modificarID').value = usuario.id_usuario;
+							document.getElementById('modificarNombre').value = usuario.nombre;
+							document.getElementById('modificarCorreo').value = usuario.correo;
+							document.getElementById('modificarTelefono').value = usuario.telefono;
+							document.getElementById('usuarioDatos').style.display = 'block'; // Mostrar el formulario de modificación
+						} else if (nombre && data.length === 1) {
+							// Si hay un solo usuario que coincide con el nombre
+							const usuario = data[0]
+						}
+					} else {
+						alert('Usuario no encontrado');
+						document.getElementById('modificarID').value = '';
+						document.getElementById('modificarNombre').value = '';
+						document.getElementById('modificarCorreo').value = '';
+						document.getElementById('modificarTelefono').value = '';
+						document.getElementById('usuarioDatos').style.display = 'none';
+					}
+					document.getElementById('buscarUsuarioForm').reset();
+				})
+				.catch(error => console.error('Error al buscar el usuario:', error));
+		}
+
+		function modificarUsuario(event) {
+			event.preventDefault();
+			const idElement = document.getElementById('modificarID');
+			const nombreElement = document.getElementById('modificarNombre');
+			const correoElement = document.getElementById('modificarCorreo');
+			const telefonoElement = document.getElementById('modificarTelefono');
+			if (!idElement || !nombreElement || !correoElement || !telefonoElement) {
+				console.error('Uno o más elementos del formulario no existen.');
+				return;
+			}
+			// Obtener los valores
+			const idUsuario = idElement.value; // ID del usuario
+			const nombreUsuario = nombreElement.value; // Nombre
+			const correoUsuario = correoElement.value; // Correo
+			const telefonoUsuario = telefonoElement.value; // Teléfono
+			// Imprimir en consola para verificar los datos
+			//console.log(`Datos a enviar: ID=${idUsuario}, Nombre=${nombreUsuario}, Correo=${correoUsuario}, Teléfono=${telefonoUsuario}`);
+			// Crear el objeto con los datos que quieres enviar
+			const Xdata = {
+				idUsuarioEditar: idUsuario,
+				nombreUsuarioEditar: nombreUsuario,
+				correoUsuarioEditar: correoUsuario,
+				telefonoUsuarioEditar: telefonoUsuario
+			};
+			fetch('/actualizar-usuario', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(Xdata),
+			})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Error en la actualización');
+					}
+					return response.json();
+				})
+				.then(data => {
+					alert('Datos Actualizados.');
+					document.getElementById('formModificarUsuario').reset(); // Limpiar el formulario después de agregar el usuario
+					//console.log('Usuario actualizado:', data);
+					CargarUsuariosBD();
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+		}
+
+		function borrarUsuario() {
+			const id = document.getElementById('modificarID').value;
+			fetch(`/usuarios/${id}`, {
+				method: 'DELETE',
+			})
+				.then(response => response.json())
+				.then(data => {
+					alert('Usuario borrado con éxito by JAvaSCript');
+					//ActualizarUsuarios();
+					//document.getElementById('usuarioDatos').style.display = 'none'; // Ocultar el formulario
+					document.getElementById('usuarioDatos').reset(); // Limpiar el formulario después de borrar el producto
+					CargarUsuariosBD();
+				})
+				.catch(error => console.error('Error al borrar el usuario:', error));
+		}
+
+		function agregarUsuario(event) {
+			event.preventDefault(); // Prevenir el comportamiento por defecto del formulario (recargar la página)
+			// Recoger los datos del formulario
+			const nombre = document.getElementById('nombreUsuario').value;
+			const apellido = document.getElementById('apellidoUsuario').value;
+			const correo = document.getElementById('correoUsuario').value;
+			const password = document.getElementById('passwordUsuario').value;
+			const telefono = document.getElementById('telefonoUsuario').value;
+			const tipoUsuario = document.getElementById('tipoUsuario').value;
+			// Crear un objeto FormData para enviar los datos al servidor
+			const formData = new FormData();
+			formData.append('nombreUsuario', nombre);
+			formData.append('apellidoUsuario', apellido);
+			formData.append('correoUsuario', correo);
+			formData.append('passwordUsuario', password);
+			formData.append('telefonoUsuario', telefono);
+			formData.append('tipoUsuario', tipoUsuario);
+			// Realizar la solicitud POST con fetch
+			fetch('/agregarUsuario', {
+				method: 'POST',
+				body: formData
+			})
+				.then(response => response.json()) // Parsear la respuesta como JSON
+				.then(data => {
+					// Mostrar un mensaje de éxito o manejar errores
+					if (data.message) {
+						alert(data.message);
+						//alert('Se agrego usuario a la Base de Datos.');
+						document.getElementById('formAgregarUsuario').reset(); // Limpiar el formulario después de agregar el usuario
+						CargarUsuariosBD();
+					} else {
+						alert('Error al agregar usuario en la Base de Datos.');
+					}
+				})
+				.catch(error => {
+					console.error('Error al agregar el usuario:', error);
+					alert('Error al agregar el usuario en la Base de Datos.');
+				});
+		}
+
+		function ActualizarUsuarios() {
+			fetch('/obtener_usuarios')
+				.then(response => response.json())
+				.then(usuarios => {
+					const tablaUsuarios = document.getElementById('tabla_usuarios');
+					tablaUsuarios.innerHTML = ''; // Limpia la tabla antes de llenarla
+
+					usuarios.forEach(usuario => {
+						const fila = document.createElement('tr');
+						fila.innerHTML = `
+                    <td>${usuario.id_usuario}</td>
+                    <td>${usuario.rol}</td>
+                    <td>${usuario.nombre}</td>
+                    <td>${usuario.apellido}</td>
+                    <td>${usuario.correo}</td>
+                    <td>${usuario.telefono}</td>
+                `;
+						tablaUsuarios.appendChild(fila);
+					});
+				})
+				.catch(error => console.error('Error al cargar usuarios:', error));
+		}
+
+		//**********************************************************************************************************
+		// ------------------------------         FUNCIONES PARA PRODUCTOS  ****************************************
+		//**********************************************************************************************************
+		function buscarProducto(event) {
+			event.preventDefault();
+
+			const id = document.getElementById('buscarID_P').value;
+			const nombre = document.getElementById('buscarNombre_P').value;
+
+			let url = '/productos';  // URL base para buscar usuarios
+			const params = [];
+			if (id) {
+				params.push(`id=${id}`);
+			}
+			if (nombre) {
+				params.push(`nombre=${nombre}`);
+			}
+			if (params.length > 0) {
+				url += `?${params.join('&')}`;
+			}
+
+			fetch(url)
+				.then(response => response.json())
+				.then(data => {
+					if (data.length > 0) {
+						if (id) {
+							const producto = data.find(u => u.id_producto === parseInt(id));
+							//const usuario = data[0];  // Toma el primer resultado
+							document.getElementById('modificarID_P').value = producto.id_producto;
+							document.getElementById('modificarNombre_P').value = producto.nombre;
+							document.getElementById('modificarCantidad_P').value = producto.cantidad;
+							document.getElementById('modificarMarca_P').value = producto.marca;
+							document.getElementById('modificarPrecio_P').value = producto.precio;
+							document.getElementById('usuarioProductos').style.display = 'block'; // Mostrar el formulario de modificación donde se invoca con el id
+						} else if (nombre && data.length === 1) {
+							// Si hay un solo usuario que coincide con el nombre
+							const producto = data[0]
+						}
+					} else {
+						alert('Producto no encontrado');
+						document.getElementById('modificarID_P').value = '';
+						document.getElementById('modificarNombre_P').value = '';
+						document.getElementById('modificarCantidad_P').value = '';
+						document.getElementById('modificarMarca_P').value = '';
+						document.getElementById('modificarPrecio_P').value = '';
+						document.getElementById('usuarioProductos').style.display = 'none';
+					}
+					document.getElementById('buscarProductoForm').reset();
+				})
+				.catch(error => console.error('Error al buscar el Producto:', error));
+		}
+
+		function modificarProducto(event) {
+			event.preventDefault();
+			const idElement = document.getElementById('modificarID_P');
+			const nombreElement = document.getElementById('modificarNombre_P');
+			const cantidadElement = document.getElementById('modificarCantidad_P');
+			const marcaElement = document.getElementById('modificarMarca_P');
+			const precioElement = document.getElementById('modificarPrecio_P');
+			//console.log(`Datos a enviar a Python: ID=${idElement}, Nombre=${nombreElement}, Cantidad=${cantidadElement}, Marca=${marcaElement}, Precio=${precioElement}`);
+			// Crear el objeto con los datos que quieres enviar
+			if (!idElement || !nombreElement || !cantidadElement || !precioElement) {
+				console.error('Uno o más elementos del formulario no existen.');
+				return;
+			}
+			// Obtener los valores
+			const idProducto = idElement.value; // ID del usuario
+			const nombreProducto = nombreElement.value; // Nombre
+			const cantidadProducto = cantidadElement.value; // Cantidad
+			const precioProducto = precioElement.value; // Precio
+			const marcaProducto = marcaElement.value;
+			console.log(`Datos a enviar a Python: ID=${idProducto}, Nombre=${nombreProducto}, Cantidad=${cantidadProducto}, Marca=${marcaProducto}, Precio=${precioProducto}`);
+			// Imprimir en consola para verificar los datos
+			//console.log(`Datos a enviar: ID=${idUsuario}, Nombre=${nombreUsuario}, Correo=${correoUsuario}, Teléfono=${telefonoUsuario}`);
+			// Crear el objeto con los datos que quieres enviar
+			const Ydata = {
+				idProductoEditar: idProducto,
+				nombreProductoEditar: nombreProducto,
+				cantidadProductoEditar: cantidadProducto,
+				precioProductoEditar: precioProducto,
+				marcaProductoEditar: marcaProducto
+			};
+			fetch('/actualizar-producto', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(Ydata),
+			})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Error en la actualización');
+					}
+					return response.json();
+				})
+				.then(data => {
+					alert('Datos Actualizados.');
+					document.getElementById('formModificarProductos').reset(); // Limpiar el formulario después de agregar el usuario
+					//console.log('Usuario actualizado:', data);
+					CargarProductosBD();
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+		}
+
+		function borrarProducto() {
+			const idProducto = document.getElementById('modificarID_P').value;
+
+			if (!idProducto) {
+				alert("Por favor, ingrese un ID de producto para borrar.");
+				return;
+			}
+
+			fetch(`/borrar-producto`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ idProductoBorrar: idProducto })
+			})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Error al borrar el producto JavaScript');
+					}
+					return response.json();
+				})
+				.then(data => {
+					alert(data.message);
+					document.getElementById('formModificarProductos').reset(); // Limpiar el formulario después de borrar el producto
+					CargarProductosBD();
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+		}
+
+		document.getElementById('productForm').addEventListener('submit', async function (event) {
+			event.preventDefault(); // Evitar el envío normal del formulario
+
+			// Recoger datos del formulario
+			const nombre = document.getElementById('nombreProducto').value;
+			const cantidad = document.getElementById('cantidadProducto').value;
+			const marca = document.getElementById('marcaProducto').value;
+			const precio = document.getElementById('precioProducto').value;
+			const fechaIngreso = document.getElementById('fechaIngreso').value;
+
+			try {
+				// Enviar los datos como JSON usando fetch
+				const response = await fetch('/agregar-producto', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						nombreProductoEditar: nombre,
+						cantidadProductoEditar: cantidad,
+						marcaProductoEditar: marca,
+						precioProductoEditar: precio,
+						fechaProductoEditar: fechaIngreso
+					})
+				});
+
+				// Manejo de la respuesta
+				const result = await response.json();
+				const mensajeAlerta = document.getElementById('mensajeAlertaProducto');
+				if (response.ok) {
+					mensajeAlerta.classList.add('alert-success');
+					mensajeAlerta.textContent = result.message;
+				} else {
+					mensajeAlerta.classList.add('alert-danger');
+					mensajeAlerta.textContent = result.message;
+				}
+				mensajeAlerta.style.display = 'block';
+			} catch (error) {
+				console.error('Error al enviar el producto:', error);
+				const mensajeAlerta = document.getElementById('mensajeAlertaProducto');
+				mensajeAlerta.classList.add('alert-danger');
+				mensajeAlerta.textContent = 'Hubo un error al enviar el producto';
+				mensajeAlerta.style.display = 'block';
+			}
+		});
+
+		//**********************************************************************************************************
+		// ------------------------------         FUNCIONES PARA CLIENTES  ****************************************
+		//**********************************************************************************************************
+		function buscarCliente(event) {
+			event.preventDefault();
+
+			const id = document.getElementById('buscarIDC').value;
+			const nombre = document.getElementById('buscarNombreC').value;
+
+			let url = '/clientesBD';  // URL base para buscar clientes en Python
+			const params = [];
+			if (id) {
+				params.push(`id=${id}`);
+			}
+			if (nombre) {
+				params.push(`nombre=${nombre}`);
+			}
+			if (params.length > 0) {
+				url += `?${params.join('&')}`;
+			}
+
+			fetch(url)
+				.then(response => response.json())
+				.then(data => {
+					if (data.length > 0) {
+						if (id) {
+							const cliente = data.find(u => u.id_cliente === parseInt(id));
+							//const usuario = data[0];  // Toma el primer resultado
+							document.getElementById('modificarIDCliente').value = cliente.id_cliente;
+							document.getElementById('modificarNombreCliente').value = cliente.nombre;
+							document.getElementById('modificarCorreoCliente').value = cliente.correo;
+							document.getElementById('modificarTelefonoCliente').value = cliente.telefono;
+							document.getElementById('modificarMedicoCliente').value = cliente.medico;
+							document.getElementById('usuarioDatosCliente').style.display = 'block'; // Mostrar el formulario de modificación
+						} else if (nombre && data.length === 1) {
+							// Si hay un solo usuario que coincide con el nombre
+							const usuario = data[0]
+						}
+					} else {
+						alert('Cliente no encontrado Javascript');
+						document.getElementById('modificarID').value = '';
+						document.getElementById('modificarNombre').value = '';
+						document.getElementById('modificarCorreo').value = '';
+						document.getElementById('modificarTelefono').value = '';
+						document.getElementById('modificarCliente').value = '';
+						document.getElementById('usuarioDatosCliente').style.display = 'none';
+					}
+					document.getElementById('buscarClienteForm').reset();
+				})
+				.catch(error => console.error('Error al buscar el cliente javascript:', error));
+		}
+
+		function modificarCliente(event) {
+			event.preventDefault();
+			const idElement = document.getElementById('modificarIDCliente');
+			const nombreElement = document.getElementById('modificarNombreCliente');
+			const correoElement = document.getElementById('modificarCorreoCliente');
+			const telefonoElement = document.getElementById('modificarTelefonoCliente');
+			const medicoElement = document.getElementById('modificarMedicoCliente');
+
+			if (!idElement || !nombreElement || !correoElement || !telefonoElement || !medicoElement) {
+				console.error('Uno o más elementos del formulario no existen.');
+				return;
+			}
+			// Obtener los valores
+			const idCliente = idElement.value; // ID del cliente
+			const nombreCliente = nombreElement.value; // Nombre Cliente
+			const correoCliente = correoElement.value; // Correo Cliente
+			const telefonoCliente = telefonoElement.value; // Teléfono Cliente
+			const medicoCliente = medicoElement.value; //Medico del Cliente 
+			// Imprimir en consola para verificar los datos
+			//console.log(`Datos a enviar: ID=${idUsuario}, Nombre=${nombreUsuario}, Correo=${correoUsuario}, Teléfono=${telefonoUsuario}`);
+			// Crear el objeto con los datos que quieres enviar
+			const Ydata = {
+				idClienteEditar: idCliente,
+				nombreClienteEditar: nombreCliente,
+				correoClienteEditar: correoCliente,
+				telefonoClienteEditar: telefonoCliente,
+				medicoClienteEditar: medicoCliente
+			};
+			fetch('/actualizar-cliente', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(Ydata),
+			})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Error en la actualización JAvaScript');
+					}
+					return response.json();
+				})
+				.then(data => {
+					alert('Datos Actualizados. JavaScript');
+					document.getElementById('formModificarCliente').reset(); // Limpiar el formulario después de agregar el cliente
+					//console.log('Usuario actualizado:', data);
+					CargarClientesBD();
+				})
+				.catch(error => {
+					console.error('JavaSCript Error:', error);
+				});
+		}
+
+		//**********************************************************************************************************
+		// ------------------------------         FUNCIONES PARA ESTUDIOS  ****************************************
+		//**********************************************************************************************************
+
+		function buscarEstudio(event) {
+			event.preventDefault();
+
+			const id = document.getElementById('buscarIDE').value;
+			const folio = document.getElementById('buscarFolioE').value;
+
+			let url = '/estudiosBD';  // URL base para buscar clientes en Python
+			const params = [];
+			if (id) {
+				params.push(`id=${id}`);
+			}
+			if (folio) {
+				params.push(`folio=${folio}`);
+			}
+			if (params.length > 0) {
+				url += `?${params.join('&')}`;
+			}
+
+			fetch(url)
+				.then(response => response.json())
+				.then(data => {
+					if (data.length > 0) {
+						let estudio;
+						// Buscar por ID o seleccionar el primer resultado si no hay ID
+						if (id) {
+							estudio = data.find(u => u.id_estudio === parseInt(id));
+						} else if (folio) {
+							estudio = data.find(u => u.folio === folio);
+						}
+
+						if (estudio) {
+							//const estudio = data.find(u => u.id_estudio === parseInt(id));
+							//const usuario = data[0];  // Toma el primer resultado
+							document.getElementById('modificarIDEstudio').value = estudio.id_estudio;
+							document.getElementById('modificarNombreEstudio').value = estudio.nombre;
+							document.getElementById('modificarFolioEstudio').value = estudio.folio;
+							document.getElementById('modificarPrecioEstudio').value = estudio.precio;
+							document.getElementById('modificarDescuentoEstudio').value = estudio.descuento;
+							document.getElementById('formModificarEstudio').style.display = 'block'; // Mostrar el formulario de modificación
+						} else {
+							alert('Cliente no encontrado Javascript');
+							document.getElementById('modificarIDEstudio').value = '';
+							document.getElementById('modificarNombreEstudio').value = '';
+							document.getElementById('modificarFolioEstudio').value = '';
+							document.getElementById('modificarPrecioEstudio').value = '';
+							document.getElementById('modificarDescuentoEstudio').value = '';
+							document.getElementById('formModificarEstudio').style.display = 'none';
+						}
+					} else {
+						alert('Estudio no encontrado');
+						document.getElementById('modificarIDEstudio').value = '';
+						document.getElementById('modificarNombreEstudio').value = '';
+						document.getElementById('modificarFolioEstudio').value = '';
+						document.getElementById('modificarPrecioEstudio').value = '';
+						document.getElementById('modificarDescuentoEstudio').value = '';
+						document.getElementById('formModificarEstudio').style.display = 'none';
+					}
+					document.getElementById('buscarEstudioForm').reset();
+				})
+				.catch(error => console.error('Error al buscar el cliente javascript:', error));
+		}
+
+		function modificarEstudio(event) {
+			event.preventDefault();
+			const idElement = document.getElementById('modificarIDEstudio');
+			const nombreElement = document.getElementById('modificarNombreEstudio');
+			const folioElement = document.getElementById('modificarFolioEstudio');
+			const precioElement = document.getElementById('modificarPrecioEstudio');
+			const descuentoElement = document.getElementById('modificarDescuentoEstudio');
+
+			if (!idElement || !nombreElement || !folioElement || !precioElement || !descuentoElement) {
+				console.error('Uno o más elementos del formulario no existen.');
+				return;
+			}
+			// Obtener los valores
+			const idEstudio = idElement.value; // ID del cliente
+			const nombreEstudio = nombreElement.value; // Nombre Cliente
+			const folioEstudio = folioElement.value; // Correo Cliente
+			const precioEstudio = precioElement.value; // Teléfono Cliente
+			const descuentoEstudio = descuentoElement.value; //Medico del Cliente 
+			// Imprimir en consola para verificar los datos
+			//console.log(`Datos a enviar: ID=${idUsuario}, Nombre=${nombreUsuario}, Correo=${correoUsuario}, Teléfono=${telefonoUsuario}`);
+			// Crear el objeto con los datos que quieres enviar
+			const Zdata = {
+				idEstudioEditar: idEstudio,
+				nombreEstudioEditar: nombreEstudio,
+				folioEstudioEditar: folioEstudio,
+				precioEstudioEditar: precioEstudio,
+				descuentoEstudioEditar: descuentoEstudio
+			};
+			fetch('/actualizar-estudio', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(Zdata),
+			})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Error en la actualización JAvaScript');
+					}
+					return response.json();
+				})
+				.then(data => {
+					alert('Datos Actualizados. JavaScript');
+					document.getElementById('formModificarEstudio').reset(); // Limpiar el formulario después de agregar el cliente
+					//console.log('Usuario actualizado:', data);
+					CargarEstudiosBD();
+				})
+				.catch(error => {
+					console.error('JavaSCript Error:', error);
+				});
+		}
+
+		function agregarEstudio(event) {
+			event.preventDefault(); // Prevenir el comportamiento por defecto del formulario (recargar la página)
+			// Recoger los datos del formulario
+			const nombre = document.getElementById('nombreEstudio').value;
+			const folio = document.getElementById('folioEstudio').value;
+			const precio = document.getElementById('precioEstudio').value;
+			const descuento = document.getElementById('descuentoEstudio').value;
+			// Crear un objeto FormData para enviar los datos al servidor
+			const formData = new FormData();
+			formData.append('nombreEstudio', nombre);
+			formData.append('folioEstudio', folio);
+			formData.append('precioEstudio', precio);
+			formData.append('descuentoEstudio', descuento);
+			// Realizar la solicitud POST con fetch
+			fetch('/agregarEstudio', {
+				method: 'POST',
+				body: formData
+			})
+				.then(response => response.json()) // Parsear la respuesta como JSON
+				.then(data => {
+					// Mostrar un mensaje de éxito o manejar errores
+					if (data.message) {
+						alert(data.message);
+						//alert('Se agrego usuario a la Base de Datos.');
+						document.getElementById('formAgregarEstudio').reset(); // Limpiar el formulario después de agregar el usuario
+						CargarEstudiosBD();
+					} else {
+						alert('Error al agregar estudio en la Base de Datos JavaScript.');
+					}
+				})
+				.catch(error => {
+					console.error('Error al agregar el estudio:', error);
+					alert('Error al agregar el estudio en la Base de Datos. JavaScript');
+				});
+		}
+
+		function borrarEstudio() {
+			const idElement = document.getElementById('modificarIDEstudio');
+			const idEstudio = idElement.value;
+
+			if (!idEstudio) {
+				alert("Por favor, ingresa el ID del Estudio que deseas eliminar.");
+				return;
+			}
+
+			const confirmacion = confirm("¿Estás seguro de que deseas eliminar este estudio?");
+			if (!confirmacion) {
+				return;
+			}
+
+			fetch(`/eliminar-estudio/${idEstudio}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Error al eliminar el estudio for JavaScript.');
+					}
+					return response.json();
+				})
+				.then(data => {
+					alert('Estudio eliminado exitosamente.');
+					document.getElementById('formModificarEstudio').reset(); // Limpiar el formulario después de eliminar el estudio
+					CargarEstudiosBD();
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+		}
+
+	</script>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script src="/static/js/jquery-3.1.1.min.js"></script>
+	<script src="/static/js/sweetalert2.min.js"></script>
+	<script src="/static/js/bootstrap.min.js"></script>
+	<script src="/static/js/material.min.js"></script>
+	<script src="/static/js/ripples.min.js"></script>
+	<script src="/static/js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="/static/js/main.js"></script>
+
+	<script>
+		$.material.init();
+	</script>
+</body>
+
+</html>

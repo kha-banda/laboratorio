@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<title>Solicitud de estudio</title>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+	<!-- Carga de jQuery (una sola vez) -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- Tu CSS personalizado -->
+	<link rel="stylesheet" href="/static/css/main.css">
+	<!-- Icono de la página -->
+	<link rel="icon" href="/static/assets/img/icono.png" type="image/x-icon">
+	<!-- Carga de libreria para generar PDF-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+	<!-- Inicialización de Material Design (si es necesario tenerlo al principio) -->
+	<script>
+		$(document).ready(function () {
+			$.material.init();  // Inicialización de Material Design
+		});
+	</script>
+	<style>
+		.hidden {
+			display: none;
+		}
+
+		#nuevoDiv2 {
+			display: none;
+		}
+	</style>
+
+</head>
+
+<body>
+
+	<section class="full-box cover dashboard-sideBar">
+		<div class="full-box dashboard-sideBar-bg btn-menu-dashboard"></div>
+		<div class="full-box dashboard-sideBar-ct">
+			<!--SideBar Title -->
+			<div class="full-box text-uppercase text-center text-titles dashboard-sideBar-title">
+				Laboratorio Clínico <i class="zmdi zmdi-close btn-menu-dashboard visible-xs"></i>
+			</div>
+			<!-- SideBar User info -->
+			<div class="full-box dashboard-sideBar-UserInfo">
+				<figure class="full-box">
+					<img src="/static/assets/img/avatar.jpg" alt="UserIcon"> <br>
+					<figcaption class="text-center text-titles">{{ usuario.correo
+						}}</figcaption>
+				</figure>
+				<ul class="full-box list-unstyled text-center">
+					<li>
+						<a href="#;" onclick="mostrarSeccion('seccion3')">
+							<i class="zmdi zmdi-settings"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#!" class="btn-exit-system" data-logout="{{ url_for('logout') }}">
+							<i class="zmdi zmdi-power"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<!-- SideBar Menu -->
+			<ul class="list-unstyled full-box dashboard-sideBar-Menu">
+				<li>
+					<a href="#" onclick="mostrarSeccion('seccion1')"><i
+							class="zmdi zmdi-view-dashboard zmdi-hc-fw"></i>Estudios</a>
+				</li>
+
+			</ul>
+			<ul class="list-unstyled full-box dashboard-sideBar-Menu">
+				<li>
+					<a href="#" onclick="mostrarSeccion('seccion2')"><i
+							class="zmdi zmdi-view-dashboard zmdi-hc-fw"></i>Insumos</a>
+				</li>
+			</ul>
+
+		</div>
+	</section>
+
+	<!-- SECCION 1 SOLICITUD DE ESTUDIOS -->
+	<section id="seccion1" class="full-box dashboard-contentPage">
+		<!-- NavBar mensajes de barra de tareas -->
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#!" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<!-- CONTENIDO DEL MENU VERDE *********************************************-->
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i> Sistema
+					Ehrlich<small> - Registros</small></h1>
+			</div>
+			<p class="lead">Ingrese los datos del cliente que solicita el estudio.</p>
+		</div>
+
+		<div class="container-fluid">
+			<div class="row">
+				<!-- Sección a modificar, Agregar Registro, viualizar registros -->
+				<div class="col-xs-12">
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li class="active"><a onclick="mostrarDiv1()" data-toggle="tab">Agregar Registro</a>
+						</li>
+						<li><a onclick="mostrarDiv2()" data-toggle="tab">Listar Registros</a>
+						</li>
+					</ul>
+				</div>
+
+				<section>
+					<div id="myTabContent" class="tab-content">
+
+						<!-- AGREGAR REGISTRO PARA LOS ESTUDIOS ------------------------------------------------------->
+						<div id="nuevoDiv1" class="container-fluid">
+							<div class="tab-pane fade active in" id="formulario">
+								<div class="container-fluid">
+									<div class="row">
+										<div class="col-xs-12 col-md-10 col-md-offset-1">
+											<form id="formulario_datos" method="POST" action="/student"
+												onsubmit="return validarFormulario()">
+												<!-- Primera columna de solicitud de estudios ************************************************************* -->
+												<div class="col-md-4">
+													<div class="form-group label-floating">
+														<label class="control-label">Nombre Completo del Cliente</label>
+														<input class="form-control" type="text" id="nombre_completo"
+															name="nombre_completo">
+													</div>
+													<!-- Código Oculto *****************************************************************************************************************-->
+													<div id="mensajeErrorNombre" class="alert alert-danger hidden">
+														Por favor, ingrese nombre con apellidos.
+													</div>
+													<div class="form-group label-floating">
+														<label class="control-label">Dirección del Cliente</label>
+														<textarea class="form-control" id="direccion"
+															name="direccion"></textarea>
+													</div>
+													<!-- Código Oculto *****************************************************************************************************************-->
+													<div id="mensajeErrorDireccion" class="alert alert-danger hidden">
+														Por favor, ingrese una dirección.
+													</div>
+													<div class="form-group label-floating">
+														<label class="control-label">Correo Electrónico</label>
+														<input class="form-control" type="text" id="correo"
+															name="correo">
+													</div>
+													<div class="form-group label-floating">
+														<label class="control-label">Número Telefónico</label>
+														<input class="form-control" type="text" id="numero_telefonico"
+															name="numero_telefonico">
+													</div>
+													<div class="form-group">
+														<label class="control-label">Fecha de Solicitud de
+															Estudio</label>
+														<input class="form-control" type="date" id="fecha_solicitud"
+															name="fecha_solicitud" required>
+													</div>
+													<!-- Código Oculto *****************************************************************************************************************-->
+													<div id="mensajeErrorFecha" class="alert alert-danger hidden">
+														Por favor, elija una fecha.
+													</div>
+													<div class="form-group">
+														<label class="control-label">Género</label>
+														<select class="form-control" id="genero" name="genero">
+															<option>Masculino</option>
+															<option>Femenino</option>
+														</select>
+													</div>
+													<div class="form-group label-floating">
+														<label class="control-label">Observaciones</label>
+														<textarea class="form-control" rows="3" id="observaciones"
+															name="observaciones"></textarea>
+													</div>
+												</div>
+												<!-- Segunda columna de solicitud de estudios -->
+												<div class="col-md-4">
+													<div class="form-group label-floating">
+														<label class="control-label">Nombre del Médico</label>
+														<input class="form-control" type="text" id="nombre_medico"
+															name="nombre_medico">
+													</div>
+													<div class="form-group label-floating">
+														<label class="control-label">Descuento</label>
+														<input class="form-control" type="text" id="Descuento"
+															name="Descuento" value="0" required>
+													</div>
+													<div class="input-group">
+														<input type="search" class="form-control" style="width: 250px;"
+															placeholder="Escriba el estudio a buscar.."
+															aria-label="Buscar" aria-describedby="search-addon"
+															id="search-estudios" />
+													</div>
+													<select id="estudios" name="estudios[]" multiple
+														style="width: 100%; max-width: 100%; height: 200px;">
+														{% for estudio in estudios %}
+														<option value="{{ estudio.nombre }}">{{ estudio.nombre }} -
+															Precio: {{ estudio.precio }}</option>
+														{% endfor %}
+													</select>
+													<!-- Código Oculto *****************************************************************************************************************-->
+													<div id="mensajeErrorEstudios" class="alert alert-danger hidden">
+														Por favor, ingrese un estudios almenos.
+													</div>
+													<button id="agregarEstudio" type="button"
+														class="btn btn-info btn-sm">Agregar
+														Estudio</button>
+													<button id="quitarEstudio" type="button"
+														class="btn btn-danger btn-sm">Quitar
+														Estudio</button>
+
+													<div class="form-group">
+														<label for="estudiosSeleccionados">Estudios
+															Seleccionados</label>
+														<textarea class="form-control" id="estudiosSeleccionados"
+															name="estudiosSeleccionados" rows="5" required
+															readonly> </textarea>
+													</div>
+
+												</div>
+												<!-- Tercera columna de solicitud de estudios -->
+												<div class="col-md-4">
+													<div class="form-group label-floating">
+														<label class="control-label">Abona</label>
+														<input class="form-control" type="text" id="Adeudo"
+															name="Adeudo" required>
+													</div>
+													<!-- Código Oculto *****************************************************************************************************************-->
+													<div id="mensajeErrorAbono" class="alert alert-danger hidden">
+														Por favor, ingrese el abono correspondiente.
+													</div>
+													<div class="form-group label-floating">
+														<label class="control-label ">Factura</label>
+														<select class="form-control" name="Factura" id="factura-select"
+															onchange="mostrarRFC()">
+															<option selected>No</option>
+															<option>Si</option>
+														</select>
+													</div>
+
+													<div class="form-group label-floating" id="rfc-container"
+														style="display: none;">
+														<label class="control-label">RFC</label>
+														<input type="text" class="form-control" name="RFC"
+															id="rfc-input">
+													</div>
+
+													<div class="form-group label-floating">
+														<label>Importe Total</label>
+														<input class="form-control" type="text" id="totalPrecio"
+															name="Importe" value="0.00" required>
+													</div>
+
+													<button id="generarPDF" type="button"
+														class="btn btn-info btn-raised btn-sm">Generar PDF</button>
+
+													<button id="limpiarRegistro" type="button"
+														class="btn btn-danger btn-raised btn-sm">Limpiar
+														Registro</button>
+												</div>
+												<p class="text-center">
+											</form>
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+						<!-- MOSTRAR ESTUDIOS REGISTRADOS  *************************************************************************-->
+						<div id="nuevoDiv2" class="container-fluid">
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-xs-12 col-md-10 col-md-offset-1">
+										<h3>Listado de los clientes que solicitaron estudios</h3>
+										<div class="form-group">
+											<input type="text" id="buscarNombre" class="form-control"
+												placeholder="Buscar por nombre" onkeyup="filtrarClientes()">
+										</div>
+										<div class="table-responsive">
+											<table class="table table-hover text-center">
+												<thead
+													style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
+													<tr>
+														<th class="text-center align-middle">ID</th>
+														<th class="text-center align-middle">Fecha</th>
+														<th class="text-center align-middle">Nombre</th>
+														<th class="text-center align-middle">Dirección</th>
+														<th class="text-center align-middle">Teléfono</th>
+														<th class="text-center align-middle">Importe Total</th>
+														<th class="text-center align-middle">Abono</th>
+														<th class="text-center align-middle">Adeudo</th>
+														<th class="text-center align-middle">Generar Estudio</th>
+													</tr>
+												</thead>
+												<tbody id="tabla_clientes">
+													<!-- Aquí se insertarán los clientes -->
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+				</section>
+
+			</div>
+		</div>
+	</section>
+
+	<!-- Modal VENTANA EMERGENTE PARA GENERAR EL ESTUDIO CON LOS DATOS DEL CLIENTE  -->
+	<div id="modalCliente" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" onclick="cerrarModal()" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">Generación del Estudio del Cliente</h4>
+				</div>
+				<div class="modal-body">
+					<!-- Pestañas de navegación -->
+					<ul class="nav nav-tabs" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" data-toggle="tab" href="#tabDatosCliente" role="tab">Datos del
+								Cliente</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#tabExamenQuimico" role="tab">Examen 1</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#tabCristaluria" role="tab">Examen 2</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#tabExamenMicroscopico" role="tab">Examen 3</a>
+						</li>
+					</ul>
+					<!-- Contenido de las pestañas -->
+					<div class="tab-content">
+						<!-- Pestaña Datos del Cliente -->
+						<div class="tab-pane show active" id="tabDatosCliente" role="tabpanel">
+							<form id="formDatosCliente">
+								<div class="row justify-content-center">
+									<div class="col-md-4">
+										<h4>Datos consultados del Sistema</h4>
+										<!-- Campos para datos del cliente -->
+										<div class="d-flex flex-column align-items-center">
+											<div class="form-group mr-3">
+												<label for="DoctorModal">Doctor:</label>
+												<input type="text" class="form-control" id="DoctorModal" readonly>
+											</div>
+											<div class="form-group mr-3">
+												<label for="ClienteModal">Paciente:</label>
+												<input type="text" class="form-control" id="ClienteModal" readonly>
+											</div>
+											<div class="form-group mr-3">
+												<label for="RegistroModal">Registro:</label>
+												<input type="text" class="form-control" id="RegistroModal">
+											</div>
+											<div class="form-group">
+												<label for="FechaModal">Fecha:</label>
+												<input type="text" class="form-control" id="FechaModal" readonly>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+
+						<!-- Pestaña Examen 1 -->
+						<div class="tab-pane" id="tabExamenQuimico" role="tabpanel">
+							<form id="formExamenQuimico" class="form-container">
+								<div class="row">
+									<!-- Columna para Examen Macroscópico -->
+									<div class="col-md-4">
+										<h4>Examen Macroscópico</h4>
+										<div class="form-group">
+											<label for="ColorModal">Color:</label>
+											<input type="text" class="form-control" id="ColorModal">
+										</div>
+										<div class="form-group">
+											<label for="AspectoModal">Aspecto:</label>
+											<input type="text" class="form-control" id="AspectoModal">
+										</div>
+										<div class="form-group">
+											<label for="SedimentoModal">Sedimento:</label>
+											<input type="text" class="form-control" id="SedimentoModal">
+										</div>
+									</div>
+
+									<!-- Columna para Examen Químico en Orina Nativa -->
+									<div class="col-md-4">
+										<h4>Examen Químico en Orina Nativa:</h4>
+										<div class="form-group">
+											<label for="DensidadModal">Densidad:</label>
+											<input type="number" class="form-control" id="DensidadModal" step="0.001"
+												placeholder="Ej: 1.010">
+										</div>
+										<div class="form-group">
+											<label for="PhModal">PH:</label>
+											<input type="number" class="form-control" id="PhModal" step="0.1"
+												placeholder="Ej: 7.5">
+										</div>
+										<div class="form-group">
+											<label for="GlucosaModal">Glucosa:</label>
+											<input type="number" class="form-control" id="GlucosaModal" step="0.1"
+												placeholder="Ej: 0 mg/dl">
+										</div>
+										<div class="form-group">
+											<label for="ProteinasModal">Proteínas:</label>
+											<input type="number" class="form-control" id="ProteinasModal"
+												placeholder="Ej: 100 mg/dl">
+										</div>
+										<div class="form-group">
+											<label for="HemogoblinaModal">Hemoglobina:</label>
+											<input type="number" class="form-control" id="HemogoblinaModal"
+												placeholder="Ej: 10 Eri/ul">
+										</div>
+										<div class="form-group">
+											<label for="CuerposCModal">Cuerpos Cetónicos:</label>
+											<input type="number" class="form-control" id="CuerposCModal"
+												placeholder="Ej: 0 mg/dl">
+										</div>
+										<div class="form-group">
+											<label for="BilirrubinaModal">Bilirrubina:</label>
+											<input type="text" class="form-control" id="BilirrubinaModal">
+										</div>
+										<div class="form-group">
+											<label for="UrobilinogenoModal">Urobilinógeno:</label>
+											<input type="text" class="form-control" id="UrobilinogenoModal">
+										</div>
+										<div class="form-group">
+											<label for="NitritosModal">Nitritos:</label>
+											<input type="text" class="form-control" id="NitritosModal">
+										</div>
+									</div>
+
+									<!-- Columna para Cristaluria -->
+									<div class="col-md-4">
+										<h4>Cristaluria</h4>
+										<div class="form-group">
+											<label for="FosfatosCModal">Fosfatos Cálcicos:</label>
+											<input type="text" class="form-control" id="FosfatosCModal">
+										</div>
+										<div class="form-group">
+											<label for="FostatosTModal">Fosfatos Triples:</label>
+											<input type="text" class="form-control" id="FostatosTModal">
+										</div>
+										<div class="form-group">
+											<label for="UratosAModal">Uratos Amorfos:</label>
+											<input type="text" class="form-control" id="UratosAModal">
+										</div>
+										<div class="form-group">
+											<label for="FosfatosAModal">Fosfatos Amorfos:</label>
+											<input type="text" class="form-control" id="FosfatosAModal">
+										</div>
+
+										<h4>AC. Úrico</h4>
+										<div class="d-flex flex-wrap">
+											<div class="form-group mr-3">
+												<label for="AnhidricoModal">Anhidro:</label>
+												<input type="text" class="form-control" id="AnhidricoModal">
+											</div>
+											<div class="form-group mr-3">
+												<label for="DihidratadoModal">Dihidratado:</label>
+												<input type="text" class="form-control" id="DihidratadoModal">
+											</div>
+										</div>
+
+										<h4>Oxalatos Cálcicos</h4>
+										<div class="form-group mr-3">
+											<label for="MonohidratadoModal">Monohidratado:</label>
+											<input type="text" class="form-control" id="MonohidratadoModal">
+										</div>
+										<div class="form-group mr-3">
+											<label for="Dihidratado2Modal">Dihidratado:</label>
+											<input type="text" class="form-control" id="Dihidratado2Modal">
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+
+						<!-- Pestaña Examen 2 -->
+						<div class="tab-pane" id="tabCristaluria" role="tabpanel">
+							<form id="formCristaluria">
+								<div class="row">
+									<div class="col-md-12">
+										<h4>EXAMEN MICROSCÓPICO (SEDIMENTO)</h4>
+										<h5>Celularidad epitelial de origen: </h5>
+										<div class="row">
+											<!-- Columna izquierda: Uretral (con sus 3 campos) -->
+											<div class="col-md-6">
+												<div class="form-group mr-4">
+													<label for="UretralModal">Uretral (uretra):</label>
+													<input type="text" class="form-control" id="UretralModal">
+												</div>
+												<!-- Subcategorías para Uretral (en una columna) -->
+												<div class="d-flex flex-wrap reduced-spacing">
+													<div class="form-group col-md-4 mr-3">
+														<label for="Superficial1Modal">Superficial:</label>
+														<input type="text" class="form-control" id="Superficial1Modal">
+													</div>
+													<div class="form-group col-md-4 mr-3">
+														<label for="Intermedio1Modal">Intermedia:</label>
+														<input type="text" class="form-control" id="Intermedio1Modal">
+													</div>
+													<div class="form-group col-md-4 mr-3">
+														<label for="Basal1Modal">Basal:</label>
+														<input type="text" class="form-control" id="Basal1Modal">
+													</div>
+												</div>
+											</div>
+
+											<!-- Columna derecha: Urotelio (con sus 3 campos) -->
+											<div class="col-md-6">
+												<div class="form-group mr-4">
+													<label for="UrotelioModal">UROTELIO (vejiga, uréteres):</label>
+													<input type="text" class="form-control" id="UrotelioModal">
+												</div>
+
+												<!-- Subcategorías para Urotelio (en una columna) -->
+												<div class="d-flex flex-wrap reduced-spacing">
+													<div class="form-group col-md-4 mr-3">
+														<label for="Superficial2Modal">Superficial:</label>
+														<input type="text" class="form-control" id="Superficial2Modal">
+													</div>
+													<div class="form-group col-md-4 mr-3">
+														<label for="Intermedio2Modal">Intermedia:</label>
+														<input type="text" class="form-control" id="Intermedio2Modal">
+													</div>
+													<div class="form-group col-md-4 mr-3">
+														<label for="Basal2Modal">Basal:</label>
+														<input type="text" class="form-control" id="Basal2Modal">
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group mt-4">
+									<label for="ObservacionesModal">Observaciones:</label>
+									<textarea class="form-control" id="ObservacionesModal" rows="3"></textarea>
+								</div>
+
+							</form>
+						</div>
+
+						<!-- Pestaña Examen 3 -->
+						<div class="tab-pane" id="tabExamenMicroscopico" role="tabpanel">
+							<form id="formExamenMicroscopico">
+								<div class="row">
+									<div class="col-md-12">
+										<h5>EXAMEN MICROSCÓPICO (SEDIMENTO) Continuación..</h5>
+										<!-- Campos de Examen Microscópico -->
+										<div class="row">
+											<!-- Columna 1 -->
+											<div class="col-md-4">
+												<div class="form-group mr-4">
+													<label for="PelvisModal">(pelvis renal):</label>
+													<input type="text" class="form-control" id="PelvisModal">
+												</div>
+												<div class="form-group mr-4">
+													<label for="TubulosRModal">RENAL (Túbulos renales):</label>
+													<input type="text" class="form-control" id="TubulosRModal">
+												</div>
+												<div class="form-group mr-4">
+													<label for="CitolisisBModal">Citolisis Bacteriana:</label>
+													<input type="text" class="form-control" id="CitolisisBModal">
+												</div>
+												<div class="form-group mr-4">
+													<label for="LeucocitosModal">Leucocitos:</label>
+													<input type="text" class="form-control" id="LeucocitosModal">
+												</div>
+												<div class="form-group mr-4">
+													<label for="LeycocitosAModal">Piocitos (Leucocitos Activos):</label>
+													<input type="text" class="form-control" id="LeycocitosAModal">
+												</div>
+											</div>
+											<!-- Columna 2 -->
+											<div class="col-md-4">
+												<div class="form-group mr-4">
+													<label for="EritrocitosModal">Eritrocitos:</label>
+													<input type="text" class="form-control" id="EritrocitosModal">
+												</div>
+												<div class="form-group mr-4">
+													<label for="NormorficosModal">(Normorficos):</label>
+													<input type="text" class="form-control" id="NormorficosModal">
+												</div>
+												<div class="form-group mr-4">
+													<label for="DismorficosModal">(Dismorficos):</label>
+													<input type="text" class="form-control" id="DismorficosModal">
+												</div>
+												<div class="form-group mr-4">
+													<label for="BacteriasModal">Bacterias en Cantidad:</label>
+													<input type="text" class="form-control" id="BacteriasModal">
+												</div>
+												<div class="form-group mr-4">
+													<label for="ParasitosModal">Parásitos:</label>
+													<input type="text" class="form-control" id="ParasitosModal">
+												</div>
+											</div>
+											<!-- Columna 3 -->
+											<div class="col-md-4">
+												<div class="form-group mr-4">
+													<label for="FungicasModal">Formas Fúngicas:</label>
+													<input type="text" class="form-control" id="FungicasModal">
+												</div>
+												<div class="form-group mr-4">
+													<label for="FilamentosModal">Filamentos de Mucina:</label>
+													<input type="text" class="form-control" id="FilamentosModal">
+												</div>
+												<div class="form-group mr-4">
+													<label for="UromucoideModal">Proteina Uromucoide:</label>
+													<input type="text" class="form-control" id="UromucoideModal">
+												</div>
+												<div class="form-group mr-4">
+													<label for="CilindrosModal">Cilindros:</label>
+													<input type="text" class="form-control" id="CilindrosModal">
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</form>
+						</div>
+
+					</div>
+				</div>
+				<div class="modal-footer" id="modalFooter">
+					<button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
+					<button type="button" onclick="guardarPDF()" class="btn btn-primary">Guardar como PDF</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--SECCION 2 PRODUCTOS DEL LABORATORIO-->
+	<section id="seccion2" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> - Agregar
+						producto del laboratorio</small></h1>
+			</div>
+			<p class="lead">Agregar producto</p>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li class="active">
+							<!-- 	<a href="#" onclick="mostrarFormulario()" data-toggle="tab">Agregar
+								<a onclick="CargarProductos()" data-toggle="tab">
+								-->
+
+							<a onclick="mostrarFormulario()" data-toggle="tab">Agregar
+								Productos </a>
+						</li>
+						<li>
+							<a onclick="CargarProductos()" data-toggle="tab">Productos Existentes</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!-- 		FORMULARIO PARA AGREGAR LOS PRODUCTOS EN LA SECCIÓN DE INSUMOS				-->
+			<div class="container-fluid" id="formularioContainer">
+				<div class="row">
+					<div class="col-md-6 col-md-offset-2">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Formulario de Producto</h3>
+							</div>
+							<div class="panel-body">
+								<form id="productForm" onsubmit="agregarProducto(event)">
+									<div class="form-group">
+										<label for="nombreProducto">Nombre</label>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" id="nombreProducto"
+												name="nombreProducto" required>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="cantidadProducto">Cantidad</label>
+										<div class="col-sm-6">
+											<input type="number" class="form-control" id="cantidadProducto"
+												name="cantidadProducto" required>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="marcaProducto">Marca</label>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" id="marcaProducto"
+												name="marcaProducto" required>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="precioProducto">Precio</label>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" id="precioProducto"
+												name="precioProducto" required>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="fechaIngreso">Fecha de Ingreso</label>
+										<div class="col-sm-6">
+											<input type="date" class="form-control" id="fechaIngreso"
+												name="fechaIngreso" required>
+										</div>
+									</div>
+									<button type="submit" class="btn btn-info btn-raised btn-sm">Guardar
+										Producto</button>
+
+									<div id="mensajeAlertaProducto" class="alert" style="display: none;"></div>
+
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 		VISUALIZACIÓN DE LOS PRODUCTOS REGISTRADOS			-->
+			<div class="container-fluid hidden" id="tablaContainer">
+				<div class="row">
+					<div class="col-xs-12 col-md-10 col-md-offset-1">
+						<h3>Productos en Resguardo del laboratorio</h3>
+						<div class="form-group" id="Datos_Productos">
+							<div class="table-responsive" style="max-height: 470px; overflow-y: auto;">
+								<table class="table table-hover text-center">
+									<thead>
+										<tr>
+											<th class="text-center align-middle">Nombre</th>
+											<th class="text-center align-middle">Cantidad</th>
+											<th class="text-center align-middle">Marca</th>
+											<th class="text-center align-middle">Precio</th>
+											<th class="text-center align-middle">Fecha de Ingreso</th>
+											<th class="text-center align-middle">Acciones</th>
+											<!-- Nueva columna para acciones -->
+										</tr>
+									</thead>
+									<!-- con este id se mandan a llamar para llenar la tabla -->
+									<tbody id="tabla_productos">
+										<!-- Aquí se insertarán los productos -->
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--AQUI SE EDITAN LOS PRODUCTOS ************************************************************************* -->
+			<div class="container-fluid hidden" id="editarFormContainer">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Editar Producto</h3>
+							</div>
+							<div class="panel-body">
+								<form id="editarProductForm" onsubmit="actualizarProducto(event)">
+									<input type="hidden" id="idProductoEditar" name="idProductoEditar">
+									<div class="form-group">
+										<label for="nombreProductoEditar">Nombre</label>
+										<input type="text" class="form-control" id="nombreProductoEditar"
+											name="nombreProductoEditar" required>
+									</div>
+									<div class="form-group">
+										<label for="cantidadProductoEditar">Cantidad</label>
+										<input type="number" class="form-control" id="cantidadProductoEditar"
+											name="cantidadProductoEditar" required>
+									</div>
+									<div class="form-group">
+										<label for="marcaProductoEditar">Marca</label>
+										<input type="text" class="form-control" id="marcaProductoEditar"
+											name="marcaProductoEditar" required>
+									</div>
+									<div class="form-group">
+										<label for="precioProductoEditar">Precio</label>
+										<input type="text" class="form-control" id="precioProductoEditar"
+											name="precioProductoEditar" required>
+									</div>
+									<div class="form-group">
+										<label for="fechaIngresoEditar">Fecha de Ingreso</label>
+										<input type="text" class="form-control" id="fechaIngresoEditar"
+											name="fechaIngresoEditar" readonly>
+									</div>
+									<button type="submit" class="btn btn-info btn-raised btn-sm">Actualizar
+										Producto</button>
+									<button type="button" class="btn btn-danger btn-raised btn-sm"
+										onclick="cancelarEdicion()">Cancelar</button>
+
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="seccion3" class="full-box dashboard-contentPage hidden">
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li>
+					<a href="#" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1 class="text-titles"><i class="zmdi zmdi-face zmdi-hc-fw"></i>
+					Sistema Ehrlich<small> - Agregar
+						*********</small></h1>
+			</div>
+			<p class="lead">Agregar producto</p>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12">
+					<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+						<li class="active">
+							<a href="#" onclick="mostrarFormulario()" data-toggle="tab">Agregar
+								Producto</a>
+						</li>
+						<li>
+							<a href="#" onclick="CargarProductos()" data-toggle="tab">Listar
+								Productos</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+	</section>
+
+	<script>
+		//Script para el mmodal y las tabulaciones del formulario en modal
+		$(document).ready(function () {
+			// Al abrir el modal, asegurarse de que la primera pestaña esté activa y visible
+			$('#modalCliente').on('shown.bs.modal', function () {
+				// Restablece la pestaña activa a "Datos del Cliente" al abrir el modal
+				$('.tab-pane').removeClass('show active');
+				$('#tabDatosCliente').addClass('show active');
+			});
+
+			// Cambiar de pestaña al hacer clic
+			$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+				$('.tab-pane').removeClass('show active');
+				$($(e.target).attr("href")).addClass('show active');
+			});
+
+			$('#modalCliente').on('hidden.bs.modal', function () {
+				document.querySelectorAll('#modalCliente form').forEach(form => form.reset());
+			});
+		});
+
+		function siguienteTab(tabId) {
+			$('.nav-tabs a[href="' + tabId + '"]').tab('show');
+			actualizarFooter();
+		}
+
+		// Muestra el footer solo en la última pestaña
+		function actualizarFooter() {
+			const modalFooter = document.getElementById('modalFooter');
+			if (!modalFooter) return; // Si el footer no existe, salimos
+
+			// Verificar si estamos en la última pestaña
+			const ultimaPestaña = document.querySelector('#tabExamenMicroscopico');
+			const esUltimaPestaña = ultimaPestaña.classList.contains('active');
+
+			// Mostrar u ocultar el footer dependiendo de la pestaña
+			modalFooter.style.display = esUltimaPestaña ? 'flex' : 'none';
+		}
+
+		// Oculta el footer al iniciar el modal en la primera pestaña
+		$(document).ready(function () {
+			actualizarFooter();
+			$('#modalCliente').on('shown.bs.modal', function () {
+				actualizarFooter();
+			});
+			$('.nav-tabs a').on('shown.bs.tab', function () {
+				actualizarFooter();
+			});
+		});
+
+		function guardarPDF() {
+			// Aquí puedes realizar la lógica para guardar o enviar los datos del formulario
+			console.log("Formulario guardado.");
+
+			// Crear una instancia de jsPDF
+			const { jsPDF } = window.jspdf;
+			const doc = new jsPDF();
+
+			// Agregar el título del PDF
+			doc.setFontSize(12);
+			doc.text("Estudio del Cliente", 10, 30);
+
+			// Capturar datos de la pestaña "Datos del Cliente COORDENADAS X Y"
+			doc.setFontSize(8);
+			doc.setFont("Helvetica", "bold"); // Cambia a negrita
+			doc.text("Datos del Cliente", 10, 40);
+			doc.setFont("Helvetica", "normal");
+			doc.text("SR. DR.:" + document.getElementById("DoctorModal").value, 10, 50);
+			doc.text(document.getElementById("DoctorModal").value, 50, 50);
+			doc.text("PACIENTE:", 10, 55);
+			doc.text(document.getElementById("ClienteModal").value, 50, 55);
+			doc.text("REGISTRO:", 10, 60);
+			doc.text(document.getElementById("RegistroModal").value, 50, 60);
+			doc.text("FECHA:", 10, 65);
+			doc.text(document.getElementById("FechaModal").value, 50, 65);
+			// Capturar datos de la pestaña "Examen Macroscópico"
+			doc.setFont("Helvetica", "bold"); // Cambia a negrita
+			doc.text("EXAMEN MACROSCÓPICO:", 10, 90);
+			doc.setFont("Helvetica", "normal");
+
+			doc.setFillColor(255, 255, 204); // Color amarillo suave (RGB: 255, 255, 204)
+
+			// Dibujar el cuadro relleno con color amarillo
+			const startX = 45;       // Posición horizontal inicial
+			const startY = 95;       // Posición vertical inicial
+			const boxWidth = 30;     // Ancho del cuadro
+			const boxHeight = 16;    // Altura del cuadro
+			// Dibuja el rectángulo con color de fondo amarillo suave
+			doc.rect(startX, startY, boxWidth, boxHeight, 'F');
+			doc.text("COLOR:", 10, 100);
+			doc.text(document.getElementById("ColorModal").value, 50, 100);
+			doc.text("ASPECTO:", 10, 105);
+			doc.text(document.getElementById("AspectoModal").value, 50, 105);
+			doc.text("SEDIMENTO:", 10, 110);
+			doc.text(document.getElementById("SedimentoModal").value, 50, 110);
+
+			doc.setFont("Helvetica", "bold"); // Cambia a negrita
+			doc.text("EXAMEN MICROSCÓPICO (SEDIMENTO)", 110, 90);
+			doc.text("Celularidad epitelial de origen:", 100, 100);
+			doc.setFont("Helvetica", "normal");
+
+			doc.setFillColor(255, 255, 204);
+			doc.rect(125, 101, 20, 5, 'F');
+			doc.text("URETRAL (Uretra):", 100, 105);
+			doc.text(document.getElementById("UretralModal").value, 130, 105);
+			doc.setFillColor(255, 255, 204);
+			doc.rect(95, 107, 18, 5, 'F');
+			doc.text("Superficial:", 80, 110);
+			doc.text(document.getElementById("Superficial1Modal").value, 100, 110);
+			doc.setFillColor(255, 255, 204);
+			doc.rect(130, 107, 18, 5, 'F');
+			doc.text("Intermedia:", 115, 110);
+			doc.text(document.getElementById("Intermedio1Modal").value, 135, 110);
+			doc.setFillColor(255, 255, 204);
+			doc.rect(158, 107, 18, 5, 'F');
+			doc.text("Basal:", 150, 110);
+			doc.text(document.getElementById("Basal1Modal").value, 163, 110);
+
+			doc.setFont("Helvetica", "bold"); // Cambia a negrita
+			doc.text("EXAMEN QUIMICO EN ORINA NATIVA", 10, 120);
+			doc.setFont("Helvetica", "normal");
+			doc.setFillColor(255, 255, 204);
+			doc.rect(45, 121, 30, 48, 'F');
+			doc.text("DENSIDAD:", 10, 125);
+			doc.text(document.getElementById("DensidadModal").value, 50, 125);
+			doc.text("PH:", 10, 130);
+			doc.text(document.getElementById("PhModal").value, 50, 130);
+			doc.text("GLUCOSA:", 10, 135);
+			doc.text(document.getElementById("GlucosaModal").value, 50, 135);
+			doc.text("PROTEINAS:", 10, 140);
+			doc.text(document.getElementById("ProteinasModal").value, 50, 140);
+			doc.text("HEMOGLOBINA:", 10, 145);
+			doc.text(document.getElementById("HemogoblinaModal").value, 50, 145);
+			doc.text("CUERPOS CETONICOS:", 10, 150);
+			doc.text(document.getElementById("CuerposCModal").value, 50, 150);
+			doc.text("BILIRRUBINA:", 10, 155);
+			doc.text(document.getElementById("BilirrubinaModal").value, 50, 155);
+			doc.text("UROBILINOGENO:", 10, 160);
+			doc.text(document.getElementById("UrobilinogenoModal").value, 50, 160);
+			doc.text("NITRITOS:", 10, 165);
+			doc.text(document.getElementById("NitritosModal").value, 50, 165);
+
+			doc.setFillColor(255, 255, 204);
+			doc.rect(128, 115, 20, 6, 'F');
+			doc.text("URETRAL (Vegiga uréteres):", 90, 120);
+			doc.text(document.getElementById("UretralModal").value, 130, 120);
+			doc.setFillColor(255, 255, 204);
+			doc.rect(95, 122, 18, 5, 'F');
+			doc.text("Superficial:   " + document.getElementById("Superficial2Modal").value, 80, 125);
+			doc.setFillColor(255, 255, 204);
+			doc.rect(130, 122, 18, 5, 'F');
+			doc.text("Intermedia:    " + document.getElementById("Intermedio2Modal").value, 115, 125);
+			doc.setFillColor(255, 255, 204);
+			doc.rect(158, 122, 18, 5, 'F');
+			doc.text("Basal:      " + document.getElementById("Basal2Modal").value, 150, 125);
+
+			doc.setFillColor(255, 255, 204);
+			doc.rect(130, 127, 18, 10, 'F');
+			doc.text("(Pelvis renal):", 110, 130);
+			doc.text(document.getElementById("PelvisModal").value, 132, 130);
+			doc.text("RENAL (Túbulos renales):", 93, 135);
+			doc.text(document.getElementById("TubulosRModal").value, 132, 135);
+
+			doc.text("CITOLISIS BACTERIANA:", 80, 145);
+			doc.setFillColor(255, 255, 204);
+			doc.rect(120, 140, 30, 32, 'F');
+			doc.text(document.getElementById("CitolisisBModal").value, 125, 145);
+			doc.text("LEUCITOS:", 80, 150);
+			doc.text(document.getElementById("LeucocitosModal").value, 125, 150);
+			doc.text("PIOCITOS (Leucocitos Activos):", 80, 155);
+			doc.text(document.getElementById("LeycocitosAModal").value, 125, 155);
+			doc.text("ERITROCITOS:", 80, 160);
+			doc.text(document.getElementById("EritrocitosModal").value, 125, 160);
+			doc.text("(Normorficos):", 80, 165);
+			doc.text(document.getElementById("TubulosRModal").value, 125, 165);
+			doc.text("(Dismorficos):", 80, 170);
+			doc.text(document.getElementById("HemogoblinaModal").value, 125, 170);
+
+			doc.setFont("Helvetica", "bold"); // Cambia a negrita
+			doc.text("CRISTALURIA", 10, 175);
+			doc.setFont("Helvetica", "normal");
+			doc.setFillColor(255, 255, 204);
+			doc.rect(45, 175, 30, 21, 'F');
+			doc.text("FOSFATOS CALCICOS:", 10, 180);
+			doc.text(document.getElementById("HemogoblinaModal").value, 50, 180);
+			doc.text("FOSFATOS TRIPLES:", 10, 185);
+			doc.text(document.getElementById("CuerposCModal").value, 50, 185);
+			doc.text("URATOS AMORFOS:", 10, 190);
+			doc.text(document.getElementById("BilirrubinaModal").value, 50, 190);
+			doc.text("FOSFATOS AMORFOS:", 10, 195);
+			doc.text(document.getElementById("UrobilinogenoModal").value, 50, 195);
+
+			doc.text("BACTERIAS EN CANTIDAD:", 80, 180);
+			doc.setFillColor(255, 255, 204);
+			doc.rect(120, 175, 30, 32, 'F');
+			doc.text(document.getElementById("BacteriasModal").value, 125, 180);
+			doc.text("PARASITOS:", 80, 185);
+			doc.text(document.getElementById("ParasitosModal").value, 125, 185);
+			doc.text("FORMAS FUNGICAS:", 80, 190);
+			doc.text(document.getElementById("FungicasModal").value, 125, 190);
+			doc.text("FILAMENTOS DE MUCINA:", 80, 195);
+			doc.text(document.getElementById("FilamentosModal").value, 125, 195);
+			doc.text("PROTEINA UROMUCOIDE:", 80, 200);
+			doc.text(document.getElementById("UromucoideModal").value, 125, 200);
+			doc.text("CILINDROS:", 80, 205);
+			doc.text(document.getElementById("CilindrosModal").value, 125, 205);
+
+			doc.text("AC. URICO:", 10, 210);
+			doc.text("(Anhidro):", 10, 215);
+			doc.setFillColor(255, 255, 204);
+			doc.rect(45, 210, 30, 12, 'F');
+			doc.text(document.getElementById("AnhidricoModal").value, 50, 215);
+			doc.text("(Dihidratado):", 10, 220);
+			doc.text(document.getElementById("DihidratadoModal").value, 50, 220);
+
+			doc.text("OXALATOS CALCICOS:", 10, 230);
+			doc.text("(Monohidratado):", 10, 235);
+			doc.setFillColor(255, 255, 204);
+			doc.rect(45, 230, 30, 12, 'F');
+			doc.text(document.getElementById("MonohidratadoModal").value, 50, 235);
+			doc.text("(Dihidratado):", 10, 240);
+			doc.text(document.getElementById("Dihidratado2Modal").value, 50, 240);
+
+			const observacionesText = "OBSERVACIONES: " + document.getElementById("ObservacionesModal").value;
+			// Dividir el texto en líneas con un ancho máximo (ajústalo según el ancho de tu documento)
+			const maxWidth = 180; // Ajusta este valor según el ancho disponible en tu documento
+			const observacionesLines = doc.splitTextToSize(observacionesText, maxWidth);
+			// Imprimir el texto dividido en líneas en la posición deseada
+			doc.text(observacionesLines, 10, 250);
+			doc.rect(85, 207, 65, 26);
+			doc.setFont("Helvetica", "bold"); // Cambia a negrita
+			doc.text("Cantidad de Cruces:", 105, 210);
+			doc.setFont("Helvetica", "normal");
+			doc.text("+", 90, 215);
+			doc.text("++", 90, 220);
+			doc.text("+++", 90, 225);
+			doc.text("++++", 90, 230);
+			doc.text("= de 1 a 5  por campo", 110, 215);
+			doc.text("= de 6 a 10  por campo", 110, 220);
+			doc.text("= de 11 a 20  por campo", 110, 225);
+			doc.text("= mas de 20 por campo", 110, 230);
+
+			doc.text("ATTE. ", 120, 270);
+
+			// Guardar el PDF
+			doc.save("EstudioCliente.pdf");
+			cerrarModal(); // Cierra el modal después de guardar si es necesario
+		}
+		// Llama a la función para cargar los productos cuando la página se carga
+		document.addEventListener('DOMContentLoaded', CargarProductos);
+		document.addEventListener('DOMContentLoaded', CargarClientes);
+		document.getElementById("formulario_datos").reset();
+
+		function mostrarDiv2() {
+			document.getElementById('nuevoDiv1').style.display = 'none';
+			document.getElementById('nuevoDiv2').style.display = 'block';
+			CargarClientes();
+		}
+
+		function mostrarDiv1() {
+			document.getElementById('nuevoDiv2').style.display = 'none';
+			document.getElementById('nuevoDiv1').style.display = 'block';
+			CargarClientes();
+		}
+
+		function cancelarEdicion() {
+			document.getElementById('editarFormContainer').classList.add('hidden'); // Ocultar el formulario de edición
+			document.getElementById('tablaContainer').classList.remove('hidden'); // Mostrar la tabla de productos
+		}
+
+		function formatearFecha(fecha) {
+			const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+			return new Date(fecha).toLocaleDateString('es-ES', options);
+		}
+		//********************************** BOTONES PARA AGREGAR O ELIMINAR ESTUDIOS **********************************************
+
+		document.addEventListener('DOMContentLoaded', function () {
+			const searchInput = document.getElementById('search-estudios');
+			const select = document.getElementById('estudios');
+			const estudiosSeleccionadostextarea = document.getElementById('estudiosSeleccionados');
+			const totalPrecio = document.getElementById('totalPrecio');
+			let preciosEstudios = [];
+
+			// FUNCION DE FLTRAR LAS OPCIONES TENER EN CUENTA ESTE BLOQUE COMPLETO **************************************************
+			searchInput.addEventListener('input', filterOptions);
+			function filterOptions() {
+				const filter = searchInput.value.toLowerCase();
+				const options = Array.from(select.options);
+				options.forEach(option => {
+					const text = option.text.toLowerCase();
+					option.style.display = text.includes(filter) ? '' : 'none';
+				});
+			}
+			//BLOQUE DE FITRO DE BUSQUEDA ********************************************************************************************
+
+
+			// Agregar estudios
+			document.getElementById('agregarEstudio').addEventListener('click', function (event) {
+				event.preventDefault();
+				const selectedOptions = Array.from(select.selectedOptions);
+				selectedOptions.forEach(option => {
+					const nombresEstudios = selectedOptions.map(option => option.text.split(' - ')[0]); // Obtener solo el nombre del estudio
+					const [nombreEstudio, precio] = option.text.split(' - Precio: '); // Separar nombre y precio
+					estudiosSeleccionadostextarea.value += nombresEstudios + '\n';
+
+					agregarPrecioEstudio(parseFloat(precio)); //Agregamos el precio del estudio seleccionado a la lista o arreglo
+					//console.log(`Precio: ${precio}`);
+				});
+				//agrega el precio pero se pierde cada vez que se elige así que por eso se pone en un arreglo
+				//totalPrecio.value = total.toFixed(2);
+				//tomamos del arreglo los precios acumulados y hacemos la suma total, el arreglo debe ser variable global
+				//calcular con el porcentaje de descuento
+				// Obtener el descuento del campo
+				let descuento = parseFloat(document.querySelector('input[name="Descuento"]').value) || 0;
+				if (descuento === 0) {
+					totalPrecio.value = calcularTotal().toFixed(2);
+				} else {
+					const totalConDescuento = calcularTotal() - (calcularTotal() * descuento / 100);
+					totalPrecio.value = (totalConDescuento > 0 ? totalConDescuento : 0).toFixed(2);
+				}
+			});
+			// Función para agregar precios a arreglo precioEstudios
+			function agregarPrecioEstudio(precio) {
+				preciosEstudios.push(precio);
+			}
+			// Función para eliminar precios
+			function eliminarPrecioEstudio(precio) {
+				preciosEstudios = [];
+				totalPrecio.value = '0.00';
+				estudiosSeleccionadostextarea.value = '';
+			}
+			/// Función para calcular el total sumando los precios en el arreglo
+			function calcularTotal() {
+				return preciosEstudios.reduce((acc, curr) => acc + curr, 0);
+			}
+
+			// Quitar estudios
+			document.getElementById('quitarEstudio').addEventListener('click', function (event) {
+				event.preventDefault();
+				eliminarPrecioEstudio();
+			});
+
+			function mostrarRFC() {
+				var facturaSelect = document.getElementById("factura-select");
+				var rfcContainer = document.getElementById("rfc-container");
+
+				if (facturaSelect.value === "Si") {
+					rfcContainer.style.display = "block"; // Muestra el campo de RFC
+				} else {
+					rfcContainer.style.display = "none"; // Oculta el campo de RFC
+					document.getElementById("rfc-input").value = ""; // Limpia el campo de RFC si se oculta
+				}
+			}
+
+			// Añadir el evento para mostrar el RFC cuando cambia la selección
+			document.getElementById("factura-select").addEventListener("change", mostrarRFC);
+
+			//Generar el archivo PDF y mandarlo a la Base de Datos la información con respecto a python*************************************
+			document.getElementById('generarPDF').addEventListener('click', function () {
+				console.log('Botón Generar PDF fue clicado');
+
+				console.log('Nombre Completo:', document.querySelector('input[name="nombre_completo"]'));
+				console.log('Dirección:', document.querySelector('input[name="direccion"]'));
+				console.log('Correo:', document.querySelector('input[name="correo"]'));
+				console.log('Número Telefónico:', document.querySelector('input[name="numero_telefonico"]'));
+				console.log('Género:', document.querySelector('input[name="genero"]'));
+				console.log('Observaciones:', document.querySelector('textarea[name="observaciones"]'));
+				console.log('Fecha de Solicitud:', document.querySelector('input[name="fecha_solicitud"]'));
+				console.log('Importe:', document.querySelector('input[name="Importe"]'));
+				console.log('Adeudo:', document.querySelector('input[name="Adeudo"]'));
+				console.log('Estudios Seleccionados:', document.querySelector('textarea[name="estudiosSeleccionados"]'));
+				console.log('Nombre Médico:', document.querySelector('input[name="nombre_medico"]'));
+				console.log('Descuento:', document.querySelector('input[name="Descuento"]'));
+				console.log('RFC:', document.querySelector('input[name="RFC"]'));
+				// Recoger los datos del formulario
+				if (!validarFormulario()) return;
+				const data = new FormData();
+				data.append('nombre_completo', document.querySelector('input[name="nombre_completo"]').value);
+				data.append('direccion', document.querySelector('textarea[name="direccion"]').value);
+				data.append('correo', document.querySelector('input[name="correo"]').value);
+				data.append('numero_telefonico', document.querySelector('input[name="numero_telefonico"]').value);
+				data.append('genero', document.querySelector('select[name="genero"]').value);
+				data.append('observaciones', document.querySelector('textarea[name="observaciones"]').value);
+				data.append('fecha_solicitud', document.querySelector('input[name="fecha_solicitud"]').value);
+				data.append('Importe', document.querySelector('input[name="Importe"]').value);
+				data.append('Adeudo', document.querySelector('input[name="Adeudo"]').value);
+				data.append('estudiosSeleccionados', document.querySelector('textarea[name="estudiosSeleccionados"]').value);
+				data.append('nombre_medico', document.querySelector('input[name="nombre_medico"]').value);
+				data.append('Descuento', document.querySelector('input[name="Descuento"]').value);
+				//data.append('RFC', document.querySelector('input[name="RFC"]').value);
+				// Añade el RFC solo si se seleccionó "Sí" en el campo de Factura
+				const facturaSeleccionada = document.querySelector('select[name="Factura"]').value;
+				if (facturaSeleccionada === "Si") {
+					const rfc = document.querySelector('input[name="RFC"]').value || '0'; // Captura el valor del RFC
+					data.append('RFC', rfc); // Agrega el RFC a los datos
+				} else {
+					data.append('RFC', '0');
+				}
+				// Enviar los datos al servidor
+				fetch('/student', {
+					method: 'POST',
+					body: data
+				})
+					.then(response => {
+						if (response.ok) {
+							return response.blob(); // Obtener el archivo PDF
+						} else {
+							throw new Error('Error en la solicitud');
+						}
+					})
+					.then(blob => {
+						// Crear un enlace para descargar el PDF
+						const url = window.URL.createObjectURL(blob);
+						const a = document.createElement('a');
+						a.href = url;
+						a.download = 'recibo.pdf'; // Nombre del archivo a descargar
+						document.body.appendChild(a);
+						a.click(); // Simula un clic para descargar
+						a.remove(); // Remueve el enlace del DOM
+					})
+					.catch(err => console.error('Error al generar el PDF:', err));
+			});
+
+			//*******************************************VALIDACOINES DEL FORMULARIO *****************************************
+			function validarFormulario() {
+				const nombreElement = document.getElementById("nombre_completo");
+				const fechaElement = document.getElementById("fecha_solicitud");
+				const estudiosElement = document.getElementById("estudiosSeleccionados");
+				const adeudoElement = document.getElementById("Adeudo");
+				const importeElement = document.getElementById("totalPrecio");
+				const direccionElement = document.getElementById("direccion");
+				// Verificar si los elementos existen
+				if (!nombreElement || !fechaElement || !estudiosElement || !adeudoElement || !importeElement || !direccionElement) {
+					console.error("Uno o más elementos no se encontraron en el DOM.");
+					return false;
+				}
+
+				// Obtener valores
+				const nombre = nombreElement.value.trim();
+				const fechaSolicitud = fechaElement.value;
+				const estudiosSeleccionados = estudiosElement.value.trim();
+				const adeudo = adeudoElement.value.trim();
+				const importe = importeElement.value.trim();
+				const direccion = direccionElement.value.trim();
+				// Validaciones
+				if (!nombre) {
+					//alert("Por favor, ingrese un nombre.");
+					document.getElementById("mensajeErrorNombre").classList.remove("hidden");
+					// Opcionalmente, podrías ocultar el mensaje después de un tiempo
+					setTimeout(function () {
+						document.getElementById("mensajeErrorNombre").classList.add("hidden");
+					}, 3000); // El mensaje desaparece después de 3 segundos
+					return false;
+				}
+				if (!direccion) {
+					document.getElementById("mensajeErrorDireccion").classList.remove("hidden");
+					// Opcionalmente, podrías ocultar el mensaje después de un tiempo
+					setTimeout(function () {
+						document.getElementById("mensajeErrorDireccion").classList.add("hidden");
+					}, 3000); // El mensaje desaparece después de 3 segundos
+					return false;
+				}
+				if (!fechaSolicitud) {
+					//alert("Por favor, seleccione una fecha de solicitud.");
+					document.getElementById("mensajeErrorFecha").classList.remove("hidden");
+					// Opcionalmente, podrías ocultar el mensaje después de un tiempo
+					setTimeout(function () {
+						document.getElementById("mensajeErrorFecha").classList.add("hidden");
+					}, 3000); // El mensaje desaparece después de 3 segundos
+					return false;
+				}
+
+				if (!estudiosSeleccionados) {
+					//alert("Por favor, seleccione al menos un estudio.");
+					document.getElementById("mensajeErrorEstudios").classList.remove("hidden");
+					// Opcionalmente, podrías ocultar el mensaje después de un tiempo
+					setTimeout(function () {
+						document.getElementById("mensajeErrorEstudios").classList.add("hidden");
+					}, 3000); // El mensaje desaparece después de 3 segundos
+					return false;
+				}
+
+				if (!adeudo) {
+					//alert("Por favor, introduzca el abono.");
+					document.getElementById("mensajeErrorAbono").classList.remove("hidden");
+					// Opcionalmente, podrías ocultar el mensaje después de un tiempo
+					setTimeout(function () {
+						document.getElementById("mensajeErrorAbono").classList.add("hidden");
+					}, 3000); // El mensaje desaparece después de 3 segundos
+					return false;
+				}
+
+				if (!importe) {
+					alert("Por favor, ingrese el importe.");
+					return false;
+				}
+
+				return true; // Si todas las validaciones pasan
+			}
+
+			// Función para limpiar el registro o restablecer el formulario
+			function limpiarRegistro() {
+				// Restablecer el formulario
+				document.getElementById("formulario_datos").reset();
+				// Limpiar campos específicos si es necesario
+				estudiosSeleccionadostextarea.value = '';
+				totalPrecio.value = '0.00';
+				// Reiniciar el arreglo de precios de estudios
+				preciosEstudios = [];
+			}
+
+			// Asignar el evento click al botón de limpiar (si tienes un botón en HTML con id="limpiarRegistro")
+			document.getElementById('limpiarRegistro').addEventListener('click', function (event) {
+				event.preventDefault();
+				limpiarRegistro();
+			});
+
+		});
+
+		//********************************* FIN DE VALIDACIONES ******************************************************
+
+		function CargarRegistros() {
+			var fechaInicio = new Date();
+
+			fechaInicio.setDate(fechaInicio.getDate() - fechaInicio.getDay());  // Inicio de la semana actual
+			document.getElementById('contenido_tab').classList.remove('active', 'in');
+			// Realizar una solicitud AJAX para obtener el reporte
+			fetch('/obtener_reporte', {
+				method: 'POST',
+				body: new URLSearchParams({ fecha_inicio: fechaInicio.toISOString().split('T')[0] }),
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			})
+				.then(response => response.json())
+				.then(data => {
+					// Manipular los datos obtenidos, por ejemplo, mostrarlos en la consola
+					mostrarResultados(data);
+				})
+				.catch(error => console.error('Error:', error));
+		}
+		//***************************************************************************//
+		// Mostrar secciones del menu lateral izquierodo
+		function mostrarSeccion(idSeccion) {
+			// Ocultar todas las secciones
+			var secciones = document.getElementsByClassName('dashboard-contentPage');
+			for (var i = 0; i < secciones.length; i++) {
+				secciones[i].classList.add('hidden');
+			}
+
+			// Mostrar la sección deseada
+			var seccion = document.getElementById(idSeccion);
+			if (seccion) {
+				seccion.classList.remove('hidden');
+			} else {
+				console.warn('Sección no encontrada: ' + idSeccion);
+			}
+
+		}
+		//***************************************************************************//
+
+		//***************************************************************************//
+		//funciones para visualizar los datos en la tabla de productos 
+		function mostrarFormulario() {
+			document.getElementById('formularioContainer').classList.remove('hidden');
+			document.getElementById('tablaContainer').classList.add('hidden');
+			document.getElementById('editarFormContainer').classList.add('hidden');
+		}
+
+		function mostrarTabla() {
+			document.getElementById('formularioContainer').classList.add('hidden');
+			document.getElementById('tablaContainer').classList.remove('hidden');
+			document.getElementById('editarFormContainer').classList.add('hidden');
+		}
+
+		// Función para cargar productos desde el servidor y mostrar en la tabla
+		function CargarProductos() {
+			fetch('/productos')
+				.then(response => response.json())
+				.then(data => {
+					const tablaProductos = document.getElementById('tabla_productos');
+					tablaProductos.innerHTML = ''; // Limpiar tabla existente
+					data.forEach(producto => {
+						const fechaFormateada = formatearFecha(producto.fecha_ingreso); // Formatear la fecha
+						const row = `
+                    <tr>
+						
+                        <td class="text-center align-middle">${producto.nombre}</td>
+                        <td class="text-center align-middle">${producto.cantidad}</td>
+                        <td class="text-center align-middle">${producto.marca}</td>
+						<td class="text-center align-middle">${producto.precio}</td>
+                        <td class="text-center align-middle">${fechaFormateada}</td>
+                        <td>
+							<button type="button" class="btn btn-info btn-raised btn-sm" onclick="editarProducto(${producto.id_producto}, '${producto.nombre}', ${producto.cantidad}, '${producto.marca}', ${producto.precio}, '${producto.fecha_ingreso}')">
+								Actualizar
+							</button>
+							<button type="button" class="btn btn-danger btn btn-danger btn-raised btn-sm" onclick="eliminarProducto(${producto.id_producto})">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+						tablaProductos.innerHTML += row;
+					});
+					mostrarTabla(); // Mostrar la tabla después de cargar los productos
+				})
+				.catch(error => console.error('Error al cargar productos:', error));
+		}
+
+		// Función para manejar la acción de editar producto
+		function editarProducto(idProducto, nombreProducto, cantidadProducto, marcaProducto, precioProducto, fechaIngreso) {
+			console.log('JavaSCript --Datos del producto:', { idProducto, nombreProducto, cantidadProducto, marcaProducto, precioProducto, fechaIngreso });
+			document.getElementById('idProductoEditar').value = idProducto;
+			document.getElementById('nombreProductoEditar').value = nombreProducto;
+			document.getElementById('cantidadProductoEditar').value = cantidadProducto;
+			document.getElementById('marcaProductoEditar').value = marcaProducto;
+			document.getElementById('precioProductoEditar').value = precioProducto;
+			document.getElementById('fechaIngresoEditar').value = fechaIngreso;
+			document.getElementById('tablaContainer').classList.add('hidden');
+			document.getElementById('editarFormContainer').classList.remove('hidden');
+		}
+		//Actualiza producto ya existente ---------
+		function actualizarProducto(event) {
+			event.preventDefault(); // Prevenir el envío predeterminado del formulario
+
+			// Obtener los valores del formulario
+			const idProducto = document.getElementById('idProductoEditar').value;
+			const nombreProducto = document.getElementById('nombreProductoEditar').value;
+			const cantidadProducto = document.getElementById('cantidadProductoEditar').value;
+			const marcaProducto = document.getElementById('marcaProductoEditar').value;
+			const precioProducto = document.getElementById('precioProductoEditar').value;
+			//const fechaProducto = document.getElementById('fechaIngresoEditar').value;
+			//console.log('Java Script --- Fecha de ingreso:', fechaProducto); // Agregar esto para depuración
+			// Crear un objeto con los datos a enviar
+			const productoData = {
+				idProductoEditar: idProducto,
+				nombreProductoEditar: nombreProducto,
+				cantidadProductoEditar: cantidadProducto,
+				marcaProductoEditar: marcaProducto,
+				precioProductoEditar: precioProducto,
+				//fechaProductoEditar: fechaProducto
+			};
+			console.log('JavaSCRipt Datos del producto:', productoData);
+			// Realizar la solicitud POST con fetch
+			fetch('/actualizar-producto', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(productoData)
+			})
+				.then(response => response.json())
+				.then(data => {
+					// Manejar la respuesta del servidor
+					if (data.message === 'JavaScript --  Producto actualizado exitosamente') {
+						alert(data.message);
+						CargarProductos(); // Volver a cargar la lista de productos
+						document.getElementById('editarFormContainer').classList.add('hidden');
+						document.getElementById('tablaContainer').classList.remove('hidden');
+					} else {
+						alert('JavaScript --  Hubo un problema al actualizar el producto.');
+					}
+				})
+				.catch(error => {
+					console.error('JavaScript -- Error al actualizar el producto:', error);
+					alert('JavaScript --  Hubo un error al actualizar el producto.');
+				});
+		}
+		//Agrega Producto nuevo -------------------
+		function agregarProducto(event) {
+			event.preventDefault(); // Prevenir el envío predeterminado del formulario
+
+			// Obtener los valores del formulario
+			//const idProducto = document.getElementById('idProductoEditar').value;
+			const nombreProducto = document.getElementById('nombreProducto').value;
+			const cantidadProducto = document.getElementById('cantidadProducto').value;
+			const marcaProducto = document.getElementById('marcaProducto').value;
+			const precioProducto = document.getElementById('precioProducto').value;
+			const fechaProducto = document.getElementById('fechaIngreso').value;
+
+			// Crear un objeto con los datos a enviar
+			const productoData = {
+				//idProductoEditar: idProducto,
+				nombreProductoEditar: nombreProducto,
+				cantidadProductoEditar: cantidadProducto,
+				marcaProductoEditar: marcaProducto,
+				precioProductoEditar: precioProducto,
+				fechaProductoEditar: fechaProducto
+			};
+			console.log('JavaSCRipt Datos del producto:', productoData);
+			// Realizar la solicitud POST con fetch
+			fetch('/agregar-producto', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(productoData)
+			})
+				.then(response => response.json())
+				.then(data => {
+					// Manejar la respuesta del servidor
+					if (data.message === 'Producto actualizado exitosamente') {
+						alert(data.message);
+						//CargarProductos(); // Volver a cargar la lista de productos
+						//mostrarFormulario();
+						document.getElementById('editarFormContainer').classList.add('hidden');
+						document.getElementById('tablaContainer').classList.remove('hidden');
+					} else {
+						alert('JavaScript -- Hubo un problema al actualizar el producto.');
+					}
+				})
+				.catch(error => {
+					console.error('JAvaScript -- Error al actualizar el producto:', error);
+					alert('JavaScript -- Hubo un error al actualizar el producto.');
+				});
+		}
+
+
+		//***************************************************************************//
+		// funciones para el formulario cuando se ingresa un producto se elimina el contenido y muestra el mensaje de exito
+		// Función para limpiar el formulario después de enviarlo exitosamente
+		function limpiarFormulario() {
+			document.getElementById('productForm').reset();
+		}
+
+		document.getElementById('editarProductForm').addEventListener('submit', function (event) {
+			event.preventDefault();
+
+			const formData = new FormData(document.getElementById('editarProductForm'));
+			console.log('Datos enviados:');
+			for (let [key, value] of formData.entries()) {
+				console.log(key, value);
+			}
+
+			fetch('/actualizar-producto', {
+				method: 'POST',
+				body: formData
+			})
+				.then(response => response.json())
+				.then(data => {
+					//alert(data.message);
+					mostrarMensajeProducto(data.message, 'success');
+					if (data.message === 'Producto actualizado exitosamente') {
+						mostrarTabla();
+						CargarProductos(); // Recargar la lista de productos después de la actualización
+					}
+				})
+				.catch(error => console.error('Error al actualizar producto:', error));
+		});
+
+		// Función para mostrar el mensaje estilizado
+		function mostrarMensajeProducto(mensaje, tipo) {
+			var mensajeAlerta = document.getElementById('mensajeAlertaProducto');
+
+			// Establece el tipo de alerta (success o error)
+			mensajeAlerta.className = 'alert alert-' + tipo;
+
+			// Establece el texto del mensaje
+			mensajeAlerta.textContent = mensaje;
+
+			// Muestra el mensaje
+			mensajeAlerta.style.display = 'block';
+
+			// Desaparece después de 3 segundos (3000 ms)
+			setTimeout(function () {
+				mensajeAlerta.style.display = 'none';
+			}, 3000);
+		}
+
+		// Al cargar la página, mostrar el formulario por defecto
+		document.addEventListener('DOMContentLoaded', function () {
+			mostrarFormulario();
+		});
+		// fin funciones para actualizar el producto
+		//***************************************************************************//
+
+		//***************************************************************************//
+		// Funcion para eliminar producto
+		// Función para eliminar un producto
+		function eliminarProducto(idProducto) {
+			if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+				fetch(`/eliminar-producto/${idProducto}`, {
+					method: 'DELETE'
+				})
+					.then(response => response.json())
+					.then(data => {
+						alert(data.message);
+						if (data.message === 'Producto eliminado exitosamente') {
+							CargarProductos(); // Recargar la lista de productos después de la eliminación
+						}
+					})
+					.catch(error => console.error('Error al eliminar producto:', error));
+			}
+		}
+		// Fin funcion para eliminar producto
+		//***************************************************************************//
+
+		//***************************************************************************//
+		let clientesData = [];
+		function CargarClientes() {
+			fetch('/clientesBD')
+				.then(response => response.json())
+				.then(data => {
+					clientesData = data; // Almacenar los datos de los clientes
+					mostrarClientes(data);
+				})
+				.catch(error => console.error('Error al cargar clientes:', error));
+		}
+
+		function mostrarClientes(data) {
+			const tablaClientes = document.getElementById('tabla_clientes');
+			tablaClientes.innerHTML = '';
+			data.forEach(cliente => {
+				const botonAdeudo = cliente.adeudo > 0 ?
+					`<button type="button" class="btn btn-danger btn-raised btn-sm"" onclick="confirmarPago(${cliente.id_cliente}, '${cliente.nombre}', ${cliente.adeudo})">${cliente.adeudo}</button>` :
+					'<button type="button" class="btn btn-info btn-raised btn-sm">Sin adeudo</button>';
+
+				const botonDatosAdicionales = `
+            <button type="button" class="btn btn-info btn-raised btn-sm" onclick="abrirModal('${cliente.nombre}', '${formatearFecha(cliente.fecha)}')">Datos adicionales</button>
+        `;
+				const row = `
+            <tr>
+                <td>${cliente.id_cliente}</td>
+                <td>${cliente.fecha}</td>
+                <td>${cliente.nombre}</td>
+                <td>${cliente.direccion}</td>
+                <td>${cliente.telefono}</td>
+                <td>${cliente.pago_total}</td>
+                <td>${cliente.abono}</td>
+                <td>${botonAdeudo}</td>
+				<td>${botonDatosAdicionales}</td> <!-- Nuevo botón -->
+            </tr>
+        `;
+				tablaClientes.innerHTML += row;
+			});
+		}
+
+		// Función para abrir el modal
+		function abrirModal(nombreCliente, fechaCliente) {
+			mostrarSeccion('modalCliente');
+			// Rellena el modal con la información del cliente (si es necesario)
+			document.getElementById('DoctorModal').value = ''; // Falta que retorno en los parámetros el nombre del Doctor
+			document.getElementById('ClienteModal').value = nombreCliente;
+			document.getElementById('FechaModal').value = fechaCliente;
+			//Falta agregar mas información para aparezca en el Modal
+			// Muestra el modal
+			$('#modalCliente').modal('show');
+		}
+
+		function cerrarModal() {
+			$('#modalCliente').modal('hide');
+			mostrarSeccion('seccion1');
+			document.querySelectorAll('#modalCliente form').forEach(form => form.reset());
+		}
+
+		// Función para generar el PDF
+		function generarPDFCliente() {
+			const dato1 = document.getElementById('dato1').value;
+			const dato2 = document.getElementById('dato2').value;
+
+			// Aquí deberías agregar la lógica para capturar los datos del cliente y generar el PDF
+			const cliente = {
+				dato1,
+				dato2,
+				// Agrega más datos si es necesario, como los del cliente seleccionado
+			};
+
+			// Simula la generación del PDF
+			console.log('Generando PDF con los siguientes datos:', cliente);
+
+			// Lógica para generar el PDF (puedes usar librerías como jsPDF o enviar los datos a un servidor para crear el PDF)
+			// Por ejemplo, usando jsPDF:
+			// const doc = new jsPDF();
+			// doc.text(`Dato 1: ${dato1}`, 10, 10);
+			// doc.text(`Dato 2: ${dato2}`, 10, 20);
+			// doc.save('cliente.pdf');
+
+			// Cierra el modal
+			$('#modalCliente').modal('hide');
+		}
+
+		function filtrarClientes() {
+			const filtro = document.getElementById('buscarNombre').value.toLowerCase();
+			const clientesFiltrados = clientesData.filter(cliente => cliente.nombre.toLowerCase().includes(filtro));
+			mostrarClientes(clientesFiltrados);
+		}
+
+		function confirmarPago(idCliente, nombreCliente, adeudo) {
+			if (confirm(`¿Cliente ${nombreCliente}: ¿Ya ha liquidado la deuda de ${adeudo}?`)) {
+				fetch(`/clientes/${idCliente}`, {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ adeudo: 0 }), // Actualizar adeudo a 0 en la base de datos
+				})
+					.then(response => {
+						if (response.ok) {
+							alert('Deuda liquidada correctamente.');
+							CargarClientes(); // Recargar la lista de clientes después de la actualización
+						} else {
+							alert('Error al actualizar la deuda.');
+						}
+					})
+					.catch(error => console.error('Error al actualizar la deuda:', error));
+			} else {
+				alert('La deuda no ha sido liquidada.');
+			}
+		}
+
+		// Llamar a la función al cargar la página
+		document.addEventListener('DOMContentLoaded', function () {
+			CargarClientes();
+			// Ocultar los campos de correo y RFC al inicio
+			// Ocultar los campos de correo y RFC al inicio
+			$('#correo-rfc-fields').hide();
+
+			// Escuchar el cambio en el select de factura
+			$('#factura-select').change(function () {
+				var facturaOption = $(this).val();
+				if (facturaOption === 'No') {
+					$('#correo-rfc-fields').hide();
+				} else {
+					$('#correo-rfc-fields').show();
+				}
+			});
+		});
+
+	</script>
+
+
+	<!-- Coloca aquí los scripts adicionales (evita duplicaciones) -->
+	<!-- Bootstrap JS -->
+	<script src="/static/js/bootstrap.min.js"></script>
+
+	<!-- Material Design (opcional, si lo usas) -->
+	<script src="/static/js/material.min.js"></script>
+	<script src="/static/js/ripples.min.js"></script>
+
+	<!-- SweetAlert2 -->
+	<script src="/static/js/sweetalert2.min.js"></script>
+
+	<!-- jQuery Custom Scrollbar -->
+	<script src="/static/js/jquery.mCustomScrollbar.concat.min.js"></script>
+
+	<!-- Archivo JavaScript personalizado -->
+	<script src="/static/js/main.js"></script>
+
+	<!-- Inicialización de Material Design (si es necesario tenerlo al final también) -->
+	<script>
+		$.material.init();
+	</script>
+
+	<!-- Asegúrate de no tener duplicados en tu código -->
+	<!-- Elimina los scripts de jQuery y Bootstrap desde CDN ya que los tienes localmente -->
+	<!-- SweetAlert2 ya está cargado localmente -->
+
+
+</body>
+
+</html>
