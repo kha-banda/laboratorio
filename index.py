@@ -17,14 +17,6 @@ app = Flask(__name__)
 
 app.secret_key = 'Alberto970013260M'
 
-#función para conectar a la base de datos
-connection = pymysql.connect(host='69.62.71.171',
-                             user='root',
-                             password='caravanadestrucs',
-                             database='bd_ehrlich',
-                             cursorclass=pymysql.cursors.DictCursor
-                             )
-
 def obtener_conexion():
     return pymysql.connect(
         host='69.62.71.171',
@@ -63,13 +55,7 @@ def estadisticas():
 
 def consultar_estudios():
         # Establecer la conexión con la base de datos MySQL
-    connection = pymysql.connect(
-        host='69.62.71.171',
-        user='root',
-        password='caravanadestrucs',
-        database='bd_ehrlich',
-        cursorclass=pymysql.cursors.DictCursor
-    )
+    connection = obtener_conexion()
     try:
         with connection.cursor() as cursor:
             sql = "SELECT nombre, precio FROM estudio;"
@@ -81,13 +67,7 @@ def consultar_estudios():
     return resultado
 
 def genera_reporte(fecha_inicio):
-    connection = pymysql.connect(
-        host='69.62.71.171',
-        user='root',
-        password='caravanadestrucs',
-        database='bd_ehrlich',
-        cursorclass=pymysql.cursors.DictCursor
-    )
+    connection = obtener_conexion()
     try:
         with connection.cursor() as cursor:
             sql = "SELECT * FROM cliente WHERE fecha >= %s"
@@ -102,6 +82,7 @@ def genera_reporte(fecha_inicio):
 #sesion del trabajador
 @app.route('/student', methods=['GET', 'POST'])
 def student():
+    connection = obtener_conexion()
     if request.method == 'GET':
         if 'usuario' in session:
             usuario = session['usuario']
@@ -114,6 +95,7 @@ def student():
     
     elif request.method == 'POST':
         if 'nombre_completo' in request.form:  # Esto verifica si el formulario es de cliente
+            connection = obtener_conexion()
             print("Datos recibidos:", request.form) 
             nombre_completo = request.form.get('nombre_completo')
             direccion = request.form.get('direccion')
@@ -233,6 +215,7 @@ def logout():
 #Ruta para el inicio de sesión
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    connection = obtener_conexion()
     if request.method == 'POST':
         correo = request.form['correo']
         passwd = request.form['contrasena']
