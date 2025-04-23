@@ -27,9 +27,9 @@ connection = pymysql.connect(host='69.62.71.171',
 
 def obtener_conexion():
     return pymysql.connect(
-        host='localhost',
-        user='alain',
-        password='alain79',
+        host='69.62.71.171',
+        user='root',
+        password='caravanadestrucs',
         database='bd_ehrlich',
         cursorclass=pymysql.cursors.DictCursor
     )
@@ -64,9 +64,9 @@ def estadisticas():
 def consultar_estudios():
         # Establecer la conexión con la base de datos MySQL
     connection = pymysql.connect(
-        host='localhost',
-        user='alain',
-        password='alain79',
+        host='69.62.71.171',
+        user='root',
+        password='caravanadestrucs',
         database='bd_ehrlich',
         cursorclass=pymysql.cursors.DictCursor
     )
@@ -82,9 +82,9 @@ def consultar_estudios():
 
 def genera_reporte(fecha_inicio):
     connection = pymysql.connect(
-        host='localhost',
+        host='69.62.71.171',
         user='root',
-        password='alain79',
+        password='caravanadestrucs',
         database='bd_ehrlich',
         cursorclass=pymysql.cursors.DictCursor
     )
